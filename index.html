@@ -3,29 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Визитка Евгения</title>
+    <title>Визитка и Чеклист</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* Переменные для светлой темы */
             --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             --card-bg: #ffffff;
             --text-main: #2d3436;
             --text-secondary: #636e72;
             --btn-color: #0088cc;
             --btn-text: #ffffff;
-            --transition-speed: 0.4s;
+            --accent-green: #2ecc71;
         }
 
-        /* Настройки для темной темы (включаются автоматически) */
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
                 --card-bg: #1f1f2e;
                 --text-main: #f8f9fa;
                 --text-secondary: #b2bec3;
-                --btn-color: #00a2ed;
             }
         }
 
@@ -37,82 +34,131 @@
             justify-content: center;
             min-height: 100vh;
             background: var(--bg-gradient);
-            background-attachment: fixed;
             color: var(--text-main);
-            transition: background var(--transition-speed);
+            transition: 0.3s;
         }
 
         .card {
             background: var(--card-bg);
-            padding: 2.5rem 2rem;
+            padding: 2rem;
             border-radius: 28px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.2);
             text-align: center;
-            max-width: 350px;
-            width: 85%;
-            transition: transform 0.3s ease, background var(--transition-speed);
+            max-width: 380px;
+            width: 90%;
+            animation: fadeIn 0.4s ease;
         }
 
-        .card:hover {
-            transform: translateY(-8px);
+        .hidden { display: none; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
-        .avatar {
-            width: 90px;
-            height: 90px;
-            background: rgba(120, 120, 120, 0.1);
-            border-radius: 50%;
-            margin: 0 auto 1.5rem;
+        h1 { font-size: 1.5rem; margin-bottom: 1rem; }
+
+        /* Стили чеклиста */
+        .checklist {
+            text-align: left;
+            margin: 1.5rem 0;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .check-item {
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            border: 2px solid var(--btn-color);
+            padding: 10px;
+            margin-bottom: 8px;
+            background: rgba(120, 120, 120, 0.05);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
         }
 
-        h1 {
-            margin: 0 0 0.5rem;
-            font-size: 1.8rem;
-            font-weight: 600;
+        .check-item:hover { background: rgba(120, 120, 120, 0.1); }
+
+        .check-item input {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent-green);
         }
 
-        p {
+        .check-item.done span {
+            text-decoration: line-through;
             color: var(--text-secondary);
-            margin-bottom: 2rem;
-            line-height: 1.6;
-            font-size: 1rem;
+            opacity: 0.6;
         }
 
         .btn {
             display: block;
             background: var(--btn-color);
-            color: var(--btn-text);
-            padding: 14px 20px;
-            border-radius: 16px;
+            color: white;
+            padding: 12px;
+            border-radius: 14px;
             text-decoration: none;
             font-weight: 600;
-            transition: filter 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 10px;
         }
 
-        .btn:hover {
-            filter: brightness(1.1);
-            box-shadow: 0 8px 20px rgba(0, 136, 204, 0.3);
-        }
-
-        .btn:active {
-            transform: scale(0.98);
-        }
+        .btn-back { background: #636e72; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <div class="avatar">👨‍💻</div>
-    <h1>Привет!</h1>
-    <p>Я жду твоего сообщения.<br>Пиши по любым вопросам!</p>
-    
-    <a href="https://t.me/evgeniykrasnyanskiy" class="btn">Написать в Telegram</a>
-</div>
+    <div id="page1" class="card">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">🌲</div>
+        <h1>Евгений</h1>
+        <p>Любитель гор, лесов и чистого кода.</p>
+        <a href="https://t.me/Evgen" class="btn">Написать в Telegram</a>
+        <button onclick="showPage('page2')" class="btn" style="background: #2ecc71;">🎒 Чеклист в поход</button>
+    </div>
+
+    <div id="page2" class="card hidden">
+        <h1>Что взять с собой?</h1>
+        <div class="checklist" id="listContainer">
+            <label class="check-item"><input type="checkbox"><span>Палатка и спальник</span></label>
+            <label class="check-item"><input type="checkbox"><span>Запас еды и горелка</span></label>
+            <label class="check-item"><input type="checkbox"><span>Аптечка</span></label>
+            <label class="check-item"><input type="checkbox"><span>Павербанк</span></label>
+            <label class="check-item"><input type="checkbox"><span>Фонарик (налобный)</span></label>
+            <label class="check-item"><input type="checkbox"><span>Дождевик</span></label>
+            <label class="check-item"><input type="checkbox"><span>Нож/мультитул</span></label>
+        </div>
+        <button onclick="showPage('page1')" class="btn btn-back">← Назад на главную</button>
+    </div>
+
+    <script>
+        function showPage(pageId) {
+            document.getElementById('page1').classList.add('hidden');
+            document.getElementById('page2').classList.add('hidden');
+            document.getElementById(pageId).classList.remove('hidden');
+        }
+
+        // Логика зачеркивания
+        document.querySelectorAll('.check-item input').forEach((checkbox, index) => {
+            // Загружаем состояние из памяти
+            const isChecked = localStorage.getItem('step-' + index) === 'true';
+            checkbox.checked = isChecked;
+            if (isChecked) checkbox.parentElement.classList.add('done');
+
+            checkbox.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    e.target.parentElement.classList.add('done');
+                } else {
+                    e.target.parentElement.classList.remove('done');
+                }
+                // Сохраняем состояние
+                localStorage.setItem('step-' + index, e.target.checked);
+            });
+        });
+    </script>
 
 </body>
 </html>
