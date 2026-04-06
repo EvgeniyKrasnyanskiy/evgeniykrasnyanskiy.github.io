@@ -1,8 +1,118 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Визитка Евгения</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Переменные для светлой темы */
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: #ffffff;
+            --text-main: #2d3436;
+            --text-secondary: #636e72;
+            --btn-color: #0088cc;
+            --btn-text: #ffffff;
+            --transition-speed: 0.4s;
+        }
+
+        /* Настройки для темной темы (включаются автоматически) */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+                --card-bg: #1f1f2e;
+                --text-main: #f8f9fa;
+                --text-secondary: #b2bec3;
+                --btn-color: #00a2ed;
+            }
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            transition: background var(--transition-speed);
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 2.5rem 2rem;
+            border-radius: 28px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 350px;
+            width: 85%;
+            transition: transform 0.3s ease, background var(--transition-speed);
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+        }
+
+        .avatar {
+            width: 90px;
+            height: 90px;
+            background: rgba(120, 120, 120, 0.1);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            border: 2px solid var(--btn-color);
+        }
+
+        h1 {
+            margin: 0 0 0.5rem;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .btn {
+            display: block;
+            background: var(--btn-color);
+            color: var(--btn-text);
+            padding: 14px 20px;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: filter 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        .btn:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 8px 20px rgba(0, 136, 204, 0.3);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
 <body>
-<h1>Привет! </h1>
-<p>Я жду твоего сообщения! </p>
-<p>Мой контакт в <a href="https://t.me/EvgeniyKrasnyanskiy">Telegram</a></p>
+
+<div class="card">
+    <div class="avatar">👨‍💻</div>
+    <h1>Привет!</h1>
+    <p>Я жду твоего сообщения.<br>Пиши по любым вопросам!</p>
+    
+    <a href="https://t.me/evgeniykrasnyanskiy" class="btn">Написать в Telegram</a>
+</div>
+
 </body>
 </html>
