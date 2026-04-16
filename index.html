@@ -1,164 +1,248 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Визитка и Чеклист</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --card-bg: #ffffff;
-            --text-main: #2d3436;
-            --text-secondary: #636e72;
-            --btn-color: #0088cc;
-            --btn-text: #ffffff;
-            --accent-green: #2ecc71;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Визитка и Чеклист</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-                --card-bg: #1f1f2e;
-                --text-main: #f8f9fa;
-                --text-secondary: #b2bec3;
-            }
-        }
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --card-bg: #ffffff;
+      --text-main: #2d3436;
+      --text-secondary: #636e72;
+      --btn-color: #0088cc;
+      --btn-text: #ffffff;
+      --accent-green: #2ecc71;
+      --btn-back: #636e72;
+    }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background: var(--bg-gradient);
-            color: var(--text-main);
-            transition: 0.3s;
-        }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        --card-bg: #1f1f2e;
+        --text-main: #f8f9fa;
+        --text-secondary: #b2bec3;
+      }
+    }
 
-        .card {
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 28px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            text-align: center;
-            max-width: 380px;
-            width: 90%;
-            animation: fadeIn 0.4s ease;
-        }
+    * {
+      box-sizing: border-box;
+    }
 
-        .hidden { display: none; }
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      overflow: hidden;
+    }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
+    .container {
+      position: relative;
+      width: 100%;
+      max-width: 380px;
+      min-height: 520px;
+    }
 
-        h1 { font-size: 1.5rem; margin-bottom: 1rem; }
+    .card {
+      position: absolute;
+      inset: 0;
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 28px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      text-align: center;
+      transition: all 0.35s ease;
+      opacity: 0;
+      transform: translateY(20px) scale(0.98);
+      pointer-events: none;
+    }
 
-        /* Стили чеклиста */
-        .checklist {
-            text-align: left;
-            margin: 1.5rem 0;
-            max-height: 300px;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
+    .card.active {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
 
-        .check-item {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            margin-bottom: 8px;
-            background: rgba(120, 120, 120, 0.05);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
 
-        .check-item:hover { background: rgba(120, 120, 120, 0.1); }
+    .emoji {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
 
-        .check-item input {
-            margin-right: 12px;
-            width: 18px;
-            height: 18px;
-            accent-color: var(--accent-green);
-        }
+    .checklist {
+      text-align: left;
+      margin: 1.5rem 0;
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
 
-        .check-item.done span {
-            text-decoration: line-through;
-            color: var(--text-secondary);
-            opacity: 0.6;
-        }
+    .check-item {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      margin-bottom: 8px;
+      background: rgba(120,120,120,0.06);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
 
-        .btn {
-            display: block;
-            background: var(--btn-color);
-            color: white;
-            padding: 12px;
-            border-radius: 14px;
-            text-decoration: none;
-            font-weight: 600;
-            border: none;
-            width: 100%;
-            cursor: pointer;
-            margin-top: 10px;
-        }
+    .check-item:hover {
+      background: rgba(120,120,120,0.12);
+    }
 
-        .btn-back { background: #636e72; margin-top: 20px; }
-    </style>
+    .check-item input {
+      margin-right: 12px;
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent-green);
+      flex-shrink: 0;
+    }
+
+    .check-item.done span {
+      text-decoration: line-through;
+      color: var(--text-secondary);
+      opacity: 0.7;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      margin-top: 12px;
+      border: none;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      color: var(--btn-text);
+      background: var(--btn-color);
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      opacity: 0.95;
+    }
+
+    .btn.green {
+      background: var(--accent-green);
+    }
+
+    .btn.back {
+      background: var(--btn-back);
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
 
-    <div id="page1" class="card">
-        <div style="font-size: 3rem; margin-bottom: 1rem;">🌲</div>
-        <h1>Евгений</h1>
-        <p>Любитель гор, лесов и чистого кода.</p>
-        <a href="https://t.me/Evgen" class="btn">Написать в Telegram</a>
-        <button onclick="showPage('page2')" class="btn" style="background: #2ecc71;">🎒 Чеклист в поход</button>
+  <div class="container">
+
+    <!-- Главная -->
+    <div id="page1" class="card active">
+      <div class="emoji">🌲</div>
+      <h1>Евгений</h1>
+      <p>Любитель гор, лесов и чистого кода.</p>
+
+      <a href="https://t.me/EvgeniyKrasnyanskiy" class="btn">
+        Написать в Telegram
+      </a>
+
+      <button class="btn green" onclick="showPage('page2')">
+        🎒 Чеклист в поход
+      </button>
     </div>
 
-    <div id="page2" class="card hidden">
-        <h1>Что взять с собой?</h1>
-        <div class="checklist" id="listContainer">
-            <label class="check-item"><input type="checkbox"><span>Палатка и спальник</span></label>
-            <label class="check-item"><input type="checkbox"><span>Запас еды и горелка</span></label>
-            <label class="check-item"><input type="checkbox"><span>Аптечка</span></label>
-            <label class="check-item"><input type="checkbox"><span>Павербанк</span></label>
-            <label class="check-item"><input type="checkbox"><span>Фонарик (налобный)</span></label>
-            <label class="check-item"><input type="checkbox"><span>Дождевик</span></label>
-            <label class="check-item"><input type="checkbox"><span>Нож/мультитул</span></label>
-        </div>
-        <button onclick="showPage('page1')" class="btn btn-back">← Назад на главную</button>
+    <!-- Чеклист -->
+    <div id="page2" class="card">
+      <h1>Что взять с собой?</h1>
+
+      <div class="checklist">
+        <label class="check-item">
+          <input type="checkbox">
+          <span>Палатка и спальник</span>
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox">
+          <span>Запас еды и горелка</span>
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox">
+          <span>Аптечка</span>
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox">
+          <span>Павербанк</span>
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox">
+          <span>Фонарик (налобный)</span>
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox">
+          <span>Дождевик</span>
+        </label>
+
+        <label class="check-item">
+          <input type="checkbox">
+          <span>Нож / мультитул</span>
+        </label>
+      </div>
+
+      <button class="btn back" onclick="showPage('page1')">
+        ← Назад
+      </button>
     </div>
 
-    <script>
-        function showPage(pageId) {
-            document.getElementById('page1').classList.add('hidden');
-            document.getElementById('page2').classList.add('hidden');
-            document.getElementById(pageId).classList.remove('hidden');
-        }
+  </div>
 
-        // Логика зачеркивания
-        document.querySelectorAll('.check-item input').forEach((checkbox, index) => {
-            // Загружаем состояние из памяти
-            const isChecked = localStorage.getItem('step-' + index) === 'true';
-            checkbox.checked = isChecked;
-            if (isChecked) checkbox.parentElement.classList.add('done');
+  <script>
+    function showPage(pageId) {
+      document.querySelectorAll('.card').forEach(card => {
+        card.classList.remove('active');
+      });
 
-            checkbox.addEventListener('change', (e) => {
-                if (e.target.checked) {
-                    e.target.parentElement.classList.add('done');
-                } else {
-                    e.target.parentElement.classList.remove('done');
-                }
-                // Сохраняем состояние
-                localStorage.setItem('step-' + index, e.target.checked);
-            });
-        });
-    </script>
+      requestAnimationFrame(() => {
+        document.getElementById(pageId).classList.add('active');
+      });
+    }
+
+    document.querySelectorAll('.check-item input').forEach((checkbox, index) => {
+      const saved = localStorage.getItem('check-' + index) === 'true';
+
+      checkbox.checked = saved;
+      if (saved) {
+        checkbox.closest('.check-item').classList.add('done');
+      }
+
+      checkbox.addEventListener('change', () => {
+        const item = checkbox.closest('.check-item');
+
+        item.classList.toggle('done', checkbox.checked);
+        localStorage.setItem('check-' + index, checkbox.checked);
+      });
+    });
+  </script>
 
 </body>
 </html>
