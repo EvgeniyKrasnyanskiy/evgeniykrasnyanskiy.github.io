@@ -174,28 +174,25 @@
       align-items: center;
       font-size: 0.85rem;
       color: var(--text-secondary);
-      flex-shrink: 0;
-      margin-left: 10px;
+      flex: 0 0 95px; /* Фиксированная ширина для правой части */
+      justify-content: flex-end;
     }
 
     .weight-input {
-      display: block !important;
-      width: 70px !important;
-      min-width: 70px !important;
-      height: 34px !important;
-      padding: 0 10px !important;
-      border: 1px solid rgba(120,120,120,0.4) !important;
-      border-radius: 6px !important;
-      background: var(--card-bg) !important;
-      color: var(--text-main) !important;
-      margin-right: 6px !important;
+      width: 60px !important;
+      height: 28px !important;
+      padding: 0 5px !important;
+      border: 1px solid rgba(0,0,0,0.2) !important;
+      border-radius: 4px !important;
+      background: #fff !important;
+      color: #000 !important;
+      margin-right: 5px !important;
       text-align: center !important;
       font-family: inherit !important;
-      font-size: 16px !important; /* Чтобы избежать зума на iOS */
-      transition: all 0.2s ease;
-      -webkit-appearance: none !important;
-      appearance: none !important;
-      -moz-appearance: textfield !important;
+      font-size: 14px !important;
+      -webkit-appearance: none;
+      appearance: none;
+      -moz-appearance: textfield;
     }
 
     .weight-input::-webkit-outer-spin-button,
@@ -209,6 +206,48 @@
       border-color: var(--btn-color);
       background: var(--card-bg);
       box-shadow: 0 0 0 3px rgba(0, 136, 204, 0.15);
+    }
+
+    /* Кнопки управления */
+    .btn-del {
+      background: none;
+      border: none;
+      color: #ff7675;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0 5px;
+      margin-left: 5px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      transition: transform 0.2s;
+    }
+
+    .btn-del:hover {
+      transform: scale(1.2);
+    }
+
+    .btn-add {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(120,120,120,0.08);
+      border: 1px dashed rgba(120,120,120,0.3);
+      border-radius: 10px;
+      padding: 8px 12px;
+      margin: 10px 0 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      width: 100%;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .btn-add:hover {
+      background: rgba(120,120,120,0.12);
+      border-color: var(--btn-color);
+      color: var(--btn-color);
     }
 
     .total-weight-card {
@@ -259,6 +298,10 @@
         <span>Общий вес:</span>
         <span id="total-weight" class="total-value">0 гр</span>
       </div>
+
+      <button class="btn back" style="background: #e74c3c; margin-top: 10px; font-size: 0.8rem; padding: 10px;" onclick="resetToDefault()">
+        ⚠ Сбросить список до начального
+      </button>
 
       <button class="btn back" onclick="showPage('page1')">
         ← Назад
@@ -350,14 +393,46 @@
       localStorage.setItem('hiking-inventory', JSON.stringify(hikingData));
     }
 
+    function resetToDefault() {
+      if (confirm('Это удалит все ваши изменения и вернет стандартный список. Продолжить?')) {
+        localStorage.removeItem('hiking-inventory');
+        hikingData = JSON.parse(JSON.stringify(INITIAL_DATA));
+        renderChecklist();
+      }
+    }
+
     function updateTotal() {
       let total = 0;
       hikingData.forEach(cat => {
         cat.items.forEach(item => {
-          total += Number(item.weight) || 0;
+          const w = parseFloat(item.weight);
+          if (!isNaN(w)) total += w;
         });
       });
-      document.getElementById('total-weight').textContent = total + ' гр';
+      document.getElementById('total-weight').textContent = Math.round(total) + ' гр';
+    }
+
+    function deleteItem(catIdx, itemIdx) {
+      if (confirm('Удалить эту вещь?')) {
+        hikingData[catIdx].items.splice(itemIdx, 1);
+        renderChecklist();
+        saveData();
+      }
+    }
+
+    function addItem(catIdx) {
+      const name = prompt('Название новой вещи:');
+      if (!name) return;
+      const weight = prompt('Вес в граммах:', '0');
+      
+      hikingData[catIdx].items.push({
+        name: name,
+        weight: weight || 0,
+        checked: false
+      });
+      
+      renderChecklist();
+      saveData();
     }
 
     function renderChecklist() {
@@ -382,6 +457,7 @@
             <div class="weight-input-wrapper">
               <input type="number" class="weight-input" value="${item.weight}" min="0">
               <span>гр</span>
+              <button class="btn-del" onclick="event.preventDefault(); deleteItem(${catIdx}, ${itemIdx})">×</button>
             </div>
           `;
 
@@ -406,6 +482,13 @@
 
           container.appendChild(label);
         });
+
+        // Кнопка добавления в категорию
+        const addBtn = document.createElement('button');
+        addBtn.className = 'btn-add';
+        addBtn.innerHTML = '<span>+ Добавить вещь</span>';
+        addBtn.onclick = () => addItem(catIdx);
+        container.appendChild(addBtn);
       });
 
       updateTotal();
