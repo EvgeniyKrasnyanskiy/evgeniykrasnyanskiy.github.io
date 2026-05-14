@@ -147,6 +147,80 @@
       background: var(--btn-back);
       margin-top: 20px;
     }
+
+    /* Стили для категорий и веса */
+    .category-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 1.5rem 0 0.8rem;
+      color: var(--btn-color);
+      border-bottom: 1px solid rgba(120,120,120,0.1);
+      padding-bottom: 4px;
+    }
+
+    .check-item {
+      justify-content: space-between;
+    }
+
+    .item-info {
+      display: flex;
+      align-items: center;
+      flex-grow: 1;
+      margin-right: 10px;
+    }
+
+    .weight-input-wrapper {
+      display: flex;
+      align-items: center;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+      margin-left: 10px;
+    }
+
+    .weight-input {
+      width: 75px;
+      padding: 5px 8px;
+      border: 1px solid rgba(120,120,120,0.3);
+      border-radius: 6px;
+      background: rgba(120,120,120,0.08);
+      color: var(--text-main);
+      margin-right: 6px;
+      text-align: center;
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      -moz-appearance: textfield;
+    }
+
+    .weight-input::-webkit-outer-spin-button,
+    .weight-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .weight-input:focus {
+      outline: none;
+      border-color: var(--btn-color);
+      background: var(--card-bg);
+      box-shadow: 0 0 0 3px rgba(0, 136, 204, 0.15);
+    }
+
+    .total-weight-card {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: rgba(120,120,120,0.06);
+      border-radius: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+    }
+
+    .total-value {
+      color: var(--btn-color);
+      font-size: 1.2rem;
+    }
   </style>
 </head>
 <body>
@@ -172,41 +246,13 @@
     <div id="page2" class="card">
       <h1>Что взять с собой?</h1>
 
-      <div class="checklist">
-        <label class="check-item">
-          <input type="checkbox">
-          <span>Палатка и спальник</span>
-        </label>
+      <div id="checklist-container" class="checklist">
+        <!-- Генерируется через JS -->
+      </div>
 
-        <label class="check-item">
-          <input type="checkbox">
-          <span>Запас еды и горелка</span>
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox">
-          <span>Аптечка</span>
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox">
-          <span>Павербанк</span>
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox">
-          <span>Фонарик (налобный)</span>
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox">
-          <span>Дождевик</span>
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox">
-          <span>Нож / мультитул</span>
-        </label>
+      <div class="total-weight-card">
+        <span>Общий вес:</span>
+        <span id="total-weight" class="total-value">0 гр</span>
       </div>
 
       <button class="btn back" onclick="showPage('page1')">
@@ -217,31 +263,151 @@
   </div>
 
   <script>
+    const INITIAL_DATA = [
+      {
+        category: "Основное",
+        items: [
+          { name: "Смартфон", weight: 200 },
+          { name: "e-Sim(Megafon)", weight: 0 },
+          { name: "Билет(пропуск)", weight: 1 },
+          { name: "Паспорт", weight: 20 },
+          { name: "Наличные (5-10тр)", weight: 10 },
+          { name: "Рюкзак", weight: 1500 },
+          { name: "Палатка(доля)", weight: 1750 },
+          { name: "Спальник", weight: 1000 },
+          { name: "Коврик", weight: 500 },
+          { name: "Трек.палки", weight: 500 }
+        ]
+      },
+      {
+        category: "Одежда",
+        items: [
+          { name: "Панама и шапка", weight: 100 },
+          { name: "Очки", weight: 50 },
+          { name: "Кроссовки", weight: 400 },
+          { name: "Тапочки", weight: 200 },
+          { name: "Брюки(на себе)", weight: 100 },
+          { name: "Брюки(запас)", weight: 100 },
+          { name: "Носки(3 пары)", weight: 100 },
+          { name: "Футболка(2 шт)", weight: 150 },
+          { name: "Лонгслив(1 шт)", weight: 100 },
+          { name: "Трусы(3 шт)", weight: 100 },
+          { name: "Дождевик", weight: 100 },
+          { name: "Спас-одеяло", weight: 20 },
+          { name: "Ветровка", weight: 100 }
+        ]
+      },
+      {
+        category: "Еда и посуда",
+        items: [
+          { name: "Продукты", weight: 2000 },
+          { name: "Нож", weight: 100 },
+          { name: "Газ и горелка(доля)", weight: 200 },
+          { name: "Котелок/посуда(доля)", weight: 400 },
+          { name: "Кружка", weight: 30 },
+          { name: "Ложка/вилка", weight: 20 },
+          { name: "Салфетки", weight: 50 },
+          { name: "Бутылка 0.5л(2шт)", weight: 1000 }
+        ]
+      },
+      {
+        category: "Прочее",
+        items: [
+          { name: "Спички", weight: 50 },
+          { name: "Крем от солнца", weight: 50 },
+          { name: "Крем для кожи", weight: 50 },
+          { name: "Зубная паста/щетка", weight: 50 },
+          { name: "Шампунь/мыло", weight: 20 },
+          { name: "Туалетная(влаж) бум", weight: 100 },
+          { name: "Полотенце(корот)", weight: 100 },
+          { name: "Фонарик", weight: 150 },
+          { name: "Таблетки", weight: 10 },
+          { name: "Пластыри", weight: 10 },
+          { name: "Бинт", weight: 20 },
+          { name: "Нитки и иголка", weight: 10 },
+          { name: "Мусорные пакеты", weight: 10 }
+        ]
+      }
+    ];
+
+    let hikingData = JSON.parse(localStorage.getItem('hiking-inventory')) || INITIAL_DATA;
+
     function showPage(pageId) {
       document.querySelectorAll('.card').forEach(card => {
         card.classList.remove('active');
       });
-
       requestAnimationFrame(() => {
         document.getElementById(pageId).classList.add('active');
       });
     }
 
-    document.querySelectorAll('.check-item input').forEach((checkbox, index) => {
-      const saved = localStorage.getItem('check-' + index) === 'true';
+    function saveData() {
+      localStorage.setItem('hiking-inventory', JSON.stringify(hikingData));
+    }
 
-      checkbox.checked = saved;
-      if (saved) {
-        checkbox.closest('.check-item').classList.add('done');
-      }
-
-      checkbox.addEventListener('change', () => {
-        const item = checkbox.closest('.check-item');
-
-        item.classList.toggle('done', checkbox.checked);
-        localStorage.setItem('check-' + index, checkbox.checked);
+    function updateTotal() {
+      let total = 0;
+      hikingData.forEach(cat => {
+        cat.items.forEach(item => {
+          total += Number(item.weight) || 0;
+        });
       });
-    });
+      document.getElementById('total-weight').textContent = total + ' гр';
+    }
+
+    function renderChecklist() {
+      const container = document.getElementById('checklist-container');
+      container.innerHTML = '';
+
+      hikingData.forEach((cat, catIdx) => {
+        const catTitle = document.createElement('div');
+        catTitle.className = 'category-title';
+        catTitle.textContent = cat.category;
+        container.appendChild(catTitle);
+
+        cat.items.forEach((item, itemIdx) => {
+          const label = document.createElement('label');
+          label.className = 'check-item' + (item.checked ? ' done' : '');
+          
+          label.innerHTML = `
+            <div class="item-info">
+              <input type="checkbox" ${item.checked ? 'checked' : ''}>
+              <span>${item.name}</span>
+            </div>
+            <div class="weight-input-wrapper">
+              <input type="number" class="weight-input" value="${item.weight}" min="0">
+              <span>гр</span>
+            </div>
+          `;
+
+          // Логика чекбокса
+          const checkbox = label.querySelector('input[type="checkbox"]');
+          checkbox.addEventListener('change', () => {
+            item.checked = checkbox.checked;
+            label.classList.toggle('done', item.checked);
+            saveData();
+          });
+
+          // Логика ввода веса
+          const weightInput = label.querySelector('.weight-input');
+          weightInput.addEventListener('input', () => {
+            item.weight = weightInput.value;
+            updateTotal();
+            saveData();
+          });
+
+          // Остановка всплытия события клика при вводе веса
+          weightInput.addEventListener('click', (e) => e.stopPropagation());
+
+          container.appendChild(label);
+        });
+      });
+
+      updateTotal();
+    }
+
+    // Инициализация
+    renderChecklist();
   </script>
 
 </body>
