@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,6 +42,7 @@
       align-items: center;
       justify-content: center;
       min-height: 100vh;
+      min-height: 100dvh;
       padding: 20px;
       background: var(--bg-gradient);
       color: var(--text-main);
@@ -52,6 +54,7 @@
       width: 100%;
       max-width: 420px;
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -63,7 +66,7 @@
       background: var(--card-bg);
       padding: 2rem 1.5rem;
       border-radius: 28px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
       text-align: center;
       transition: all 0.35s ease;
       opacity: 0;
@@ -77,12 +80,16 @@
       body {
         padding: 0;
       }
+
       .container {
         max-width: 100%;
       }
+
       .card {
         border-radius: 0;
-        padding: 1.5rem 1rem;
+        padding: 1.5rem 1rem 2.5rem; /* Безопасный отступ снизу */
+        height: 100%;
+        width: 100%;
       }
     }
 
@@ -116,7 +123,7 @@
       align-items: center;
       padding: 10px;
       margin-bottom: 8px;
-      background: rgba(120,120,120,0.06);
+      background: rgba(120, 120, 120, 0.06);
       border-radius: 12px;
       cursor: grab;
       transition: 0.2s;
@@ -130,7 +137,7 @@
     }
 
     .check-item:hover {
-      background: rgba(120,120,120,0.12);
+      background: rgba(120, 120, 120, 0.12);
     }
 
     .check-item input {
@@ -183,7 +190,7 @@
       font-weight: 600;
       margin: 1.5rem 0 0.8rem;
       color: var(--btn-color);
-      border-bottom: 1px solid rgba(120,120,120,0.1);
+      border-bottom: 1px solid rgba(120, 120, 120, 0.1);
       padding-bottom: 4px;
     }
 
@@ -203,7 +210,8 @@
       align-items: center;
       font-size: 0.85rem;
       color: var(--text-secondary);
-      flex: 0 0 95px; /* Фиксированная ширина для правой части */
+      flex: 0 0 95px;
+      /* Фиксированная ширина для правой части */
       justify-content: flex-end;
     }
 
@@ -211,7 +219,7 @@
       width: 60px !important;
       height: 28px !important;
       padding: 0 5px !important;
-      border: 1px solid rgba(0,0,0,0.2) !important;
+      border: 1px solid rgba(0, 0, 0, 0.2) !important;
       border-radius: 4px !important;
       background: #fff !important;
       color: #000 !important;
@@ -259,8 +267,8 @@
     .btn-add {
       display: inline-flex;
       align-items: center;
-      background: rgba(120,120,120,0.08);
-      border: 1px dashed rgba(120,120,120,0.3);
+      background: rgba(120, 120, 120, 0.08);
+      border: 1px dashed rgba(120, 120, 120, 0.3);
       border-radius: 10px;
       padding: 8px 12px;
       margin: 10px 0 20px;
@@ -274,7 +282,7 @@
     }
 
     .btn-add:hover {
-      background: rgba(120,120,120,0.12);
+      background: rgba(120, 120, 120, 0.12);
       border-color: var(--btn-color);
       color: var(--btn-color);
     }
@@ -282,7 +290,7 @@
     .total-weight-card {
       margin-top: 1.5rem;
       padding: 1rem;
-      background: rgba(120,120,120,0.06);
+      background: rgba(120, 120, 120, 0.06);
       border-radius: 16px;
       display: flex;
       justify-content: space-between;
@@ -293,7 +301,7 @@
     .total-value {
       color: var(--btn-color);
       font-size: 1.4rem;
-      text-shadow: 0 0 10px rgba(0,0,0,0.05);
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
       transition: color 0.5s ease;
     }
 
@@ -311,7 +319,7 @@
       margin-left: 8px;
       cursor: pointer;
       vertical-align: middle;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       transition: transform 0.2s;
     }
 
@@ -320,6 +328,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <div class="container">
@@ -356,10 +365,12 @@
       </div>
 
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
-        <button class="btn back" style="background: #e67e22; margin-top: 0; font-size: 0.75rem; padding: 10px;" onclick="resetToDefault()">
+        <button class="btn back" style="background: #e67e22; margin-top: 0; font-size: 0.75rem; padding: 10px;"
+          onclick="resetToDefault()">
           ↺ Вернуть шаблон
         </button>
-        <button class="btn back" style="background: #e74c3c; margin-top: 0; font-size: 0.75rem; padding: 10px;" onclick="clearAllData()">
+        <button class="btn back" style="background: #e74c3c; margin-top: 0; font-size: 0.75rem; padding: 10px;"
+          onclick="clearAllData()">
           🗑 Очистить всё
         </button>
       </div>
@@ -368,15 +379,15 @@
         ← Назад
       </button>
 
-      <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 20px; opacity: 0.5;">
-        v2.1 | Guide Included
+      <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 15px; opacity: 0.5;">
+        v2.2 | Mobile Fix
       </div>
     </div>
 
   </div>
 
   <script>
-    const APP_VERSION = "2.1";
+    const APP_VERSION = "2.2";
 
     const INITIAL_DATA = [
       {
@@ -459,7 +470,7 @@
         });
 
         const userItems = savedCat.items.filter(si => !initCat.items.find(ii => ii.name === si.name));
-        
+
         return {
           ...initCat,
           items: [...mergedItems, ...userItems]
@@ -548,7 +559,7 @@
     function getWeightColor(grams) {
       const kg = (grams / 1000).toFixed(1);
       const formatted = formatW(grams);
-      
+
       if (grams <= 8000) return { color: "#2ecc71", advice: `Идеал: Ваш вес ${kg} кг (${formatted} гр). Вы буквально бежите по тропе! Уровень Fastpacking.` };
       if (grams <= 11000) return { color: "#f1c40f", advice: `Оптимально: Ваш вес ${kg} кг (${formatted} гр). Позволяет идти бодро и не умирать к вечеру. Уровень Lightweight.` };
       if (grams <= 14000) return { color: "#e67e22", advice: `Выше оптимального: Ваш вес ${kg} кг (${formatted} гр). Начинает чувствоваться нагрузка. Стоит подумать об оптимизации.` };
@@ -558,35 +569,35 @@
 
     function getCategoryWeightColor(category, grams) {
       const kg = grams / 1000;
-      
+
       if (category.includes("Основное")) {
         if (kg <= 4.5) return { color: "#2ecc71", advice: "Идеально (3.5–4.5 кг): Ультралегкий рюкзак, пуховый спальник, легкая палатка. Здесь вес сбрасывается эффективнее всего." };
         if (kg <= 6.0) return { color: "#f1c40f", advice: "Оптимально (5.0–6.0 кг): Комфортный вес для качественного современного снаряжения." };
         if (kg <= 9.0) return { color: "#e67e22", advice: "Тяжело (6.5–8.0 кг): Вес начинает заметно давить на плечи через 4-5 часов активного хода." };
         return { color: "#e74c3c", advice: "Критично (> 9.0 кг): Только база весит столько, сколько должен весить весь рюкзак! Нужно менять снаряжение." };
       }
-      
+
       if (category.includes("Одежда")) {
         if (kg <= 1.5) return { color: "#2ecc71", advice: "Идеально (1.0–1.5 кг): Технологичный минимум (мембрана, отвод влаги). Минимум сменки." };
         if (kg <= 2.2) return { color: "#f1c40f", advice: "Оптимально (1.5–2.2 кг): Включая тапочки для лагеря и полноценный теплый слой." };
         if (kg <= 4.0) return { color: "#e67e22", advice: "Тяжело (2.5–3.5 кг): Лишние джинсы, хлопковые футболки, тяжелые шерстяные свитера." };
         return { color: "#e74c3c", advice: "Критично (> 4.0 кг): Слишком много «запасных» вещей, которые останутся на дне рюкзака." };
       }
-      
+
       if (category.includes("Еда") || category.includes("Кухня")) {
         if (kg <= 2.2) return { color: "#2ecc71", advice: "Идеально (1.8–2.2 кг): Сублиматы, титановая посуда, строгий расчет 500г еды в день." };
         if (kg <= 3.5) return { color: "#f1c40f", advice: "Оптимально (2.5–3.0 кг): Хорошая раскладка, газ с запасом, стандартная надежная горелка." };
         if (kg <= 5.0) return { color: "#e67e22", advice: "Тяжело (3.5–4.5 кг): Тяжелые консервы, лишняя посуда, избыток неучтенных продуктов." };
         return { color: "#e74c3c", advice: "Критично (> 5.0 кг): Стеклянные банки, «бабушкины» запасы, лишнее топливо. Вес еды должен таять!" };
       }
-      
+
       if (category.includes("Прочее") || category.includes("Гигиена")) {
         if (kg <= 0.8) return { color: "#2ecc71", advice: "Идеально (0.5–0.8 кг): Мини-тюбики, только нужные таблетки, компактный легкий Powerbank." };
         if (kg <= 1.5) return { color: "#f1c40f", advice: "Оптимально (1.0–1.5 кг): Полная аптечка, средства гигиены, смартфон, документы." };
         if (kg <= 3.0) return { color: "#e67e22", advice: "Тяжело (2.0–2.5 кг): Полноразмерные шампуни, книги, тяжелые инструменты, ножи." };
         return { color: "#e74c3c", advice: "Критично (> 3.0 кг): Огромные косметички, лишняя электроника или книги в твердом переплете." };
       }
-      
+
       return { color: "#636e72", advice: "Категория без спецификации веса. Старайтесь держать минимум." };
     }
 
@@ -626,13 +637,13 @@
       const name = prompt('Название новой вещи:');
       if (!name) return;
       const weight = prompt('Вес в граммах:', '0');
-      
+
       hikingData[catIdx].items.push({
         name: name,
         weight: weight || 0,
         checked: false
       });
-      
+
       renderChecklist();
       saveData();
     }
@@ -653,9 +664,9 @@
         catHeader.className = 'category-title';
         catHeader.style.display = 'flex';
         catHeader.style.justifyContent = 'space-between';
-        
+
         const catRes = getCategoryWeightColor(cat.category, catTotal);
-        
+
         catHeader.innerHTML = `
           <span>${cat.category}</span>
           <span style="font-size: 0.8rem; font-weight: 600; color: ${catRes.color}; cursor: help;" 
@@ -669,12 +680,12 @@
         cat.items.forEach((item, itemIdx) => {
           const itemW = parseFloat(item.weight) || 0;
           const itemColor = getItemWeightColor(itemW);
-          
+
           const label = document.createElement('label');
           label.className = 'check-item' + (item.checked ? ' done' : '');
           label.style.borderLeft = `4px solid ${itemColor}`;
           label.draggable = true;
-          
+
           label.innerHTML = `
             <div class="item-info">
               <span style="margin-right: 10px; opacity: 0.3; font-size: 0.8rem; cursor: grab;">☰</span>
@@ -733,7 +744,7 @@
           const weightInput = label.querySelector('.weight-input');
           weightInput.addEventListener('input', () => {
             item.weight = weightInput.value;
-            renderChecklist(); 
+            renderChecklist();
             saveData();
           });
 
@@ -758,4 +769,5 @@
   </script>
 
 </body>
+
 </html>
