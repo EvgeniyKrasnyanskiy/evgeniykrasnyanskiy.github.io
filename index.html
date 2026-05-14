@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Визитка и Чеклист</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
@@ -306,11 +309,17 @@
       <button class="btn back" onclick="showPage('page1')">
         ← Назад
       </button>
+
+      <div style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 20px; opacity: 0.5;">
+        v1.1 | Data Sync Active
+      </div>
     </div>
 
   </div>
 
   <script>
+    const APP_VERSION = "1.1";
+
     const INITIAL_DATA = [
       {
         category: "Основное",
@@ -378,7 +387,33 @@
       }
     ];
 
-    let hikingData = JSON.parse(localStorage.getItem('hiking-inventory')) || INITIAL_DATA;
+    function migrateData(saved) {
+      if (!saved) return { version: APP_VERSION, categories: INITIAL_DATA };
+      if (saved.version === APP_VERSION) return saved;
+
+      const mergedCategories = INITIAL_DATA.map(initCat => {
+        const savedCat = (Array.isArray(saved) ? saved : (saved.categories || [])).find(c => c.category === initCat.category);
+        if (!savedCat) return initCat;
+
+        const mergedItems = initCat.items.map(initItem => {
+          const savedItem = savedCat.items.find(i => i.name === initItem.name);
+          return savedItem ? { ...initItem, ...savedItem } : initItem;
+        });
+
+        const userItems = savedCat.items.filter(si => !initCat.items.find(ii => ii.name === si.name));
+        
+        return {
+          ...initCat,
+          items: [...mergedItems, ...userItems]
+        };
+      });
+
+      return { version: APP_VERSION, categories: mergedCategories };
+    }
+
+    let rawStorage = localStorage.getItem('hiking-inventory');
+    let hikingState = migrateData(rawStorage ? JSON.parse(rawStorage) : null);
+    let hikingData = hikingState.categories;
 
     function showPage(pageId) {
       document.querySelectorAll('.card').forEach(card => {
@@ -390,7 +425,10 @@
     }
 
     function saveData() {
-      localStorage.setItem('hiking-inventory', JSON.stringify(hikingData));
+      localStorage.setItem('hiking-inventory', JSON.stringify({
+        version: APP_VERSION,
+        categories: hikingData
+      }));
     }
 
     function resetToDefault() {
