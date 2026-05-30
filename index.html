@@ -391,7 +391,7 @@
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
         <button class="btn green" style="margin-top: 0; font-size: 0.75rem; padding: 10px;"
           onclick="shareList()">
-          🔗 Поделиться
+          🔗 Поделиться / Сохранить
         </button>
         <button class="btn" style="background: #9b59b6; margin-top: 0; font-size: 0.75rem; padding: 10px;"
           onclick="triggerFileImport()">
@@ -1109,13 +1109,41 @@
       });
     }
 
-    function downloadTextFile(textReport) {
+    async function downloadTextFile(textReport) {
       try {
         // Динамическое считывание имени владельца из заголовка на главной
         const userName = document.querySelector('#page1 h1')?.textContent?.trim() || 'Евгений';
         const fileName = `checklist-${userName}.txt`;
 
-        const blob = new Blob([textReport], { type: 'text/plain;charset=utf-8' });
+        // Добавляем маркер UTF-8 BOM (\uFEFF) для корректного отображения кириллицы на смартфонах и в Блокноте
+        const contentWithBOM = '\uFEFF' + textReport;
+
+        // Пытаемся открыть диалог выбора папки для сохранения на ПК
+        if (window.showSaveFilePicker) {
+          try {
+            const handle = await window.showSaveFilePicker({
+              suggestedName: fileName,
+              types: [{
+                description: 'Текстовый файл чеклиста',
+                accept: {
+                  'text/plain': ['.txt'],
+                },
+              }],
+            });
+            const writable = await handle.createWritable();
+            await writable.write(contentWithBOM);
+            await writable.close();
+            alert('Файл успешно сохранен!');
+            return;
+          } catch (err) {
+            // Если пользователь нажал отмену в диалоге сохранения, просто выходим
+            if (err.name === 'AbortError') return;
+            // Для остальных ошибок переходим к стандартному скачиванию
+          }
+        }
+
+        // Фоллбек для мобильных браузеров (прямое скачивание Blob)
+        const blob = new Blob([contentWithBOM], { type: 'text/plain;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
