@@ -391,7 +391,7 @@
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
         <button class="btn green" style="margin-top: 0; font-size: 0.75rem; padding: 10px;"
           onclick="shareList()">
-          🔗 Поделиться / Сохранить
+          🔗 Поделиться
         </button>
         <button class="btn" style="background: #9b59b6; margin-top: 0; font-size: 0.75rem; padding: 10px;"
           onclick="triggerFileImport()">
@@ -1026,8 +1026,8 @@
     }
 
     // Генерация красивого текстового отчета по вещам
-    function generateTextReport() {
-      let report = `🎒 Мой походный чеклист\n`;
+    function generateTextReport(ownerName) {
+      let report = `🎒 Походный чеклист: ${ownerName}\n`;
       report += `====================\n\n`;
       
       let grandTotal = 0;
@@ -1072,27 +1072,38 @@
         saveData();
         renderChecklist();
 
-        const textReport = generateTextReport();
+        // Спрашиваем имя владельца перед экспортом для персонализации отчета и имени файла
+        const defaultName = document.querySelector('#page1 h1')?.textContent?.trim() || 'Евгений';
+        const ownerName = prompt('Чей это список вещей? (для подписи отчета и имени файла):', defaultName);
+        
+        // Если пользователь отменил диалог prompt (нажал Отмену), прерываем шеринг
+        if (ownerName === null) return;
+        
+        const finalOwnerName = ownerName.trim() || defaultName;
+        const textReport = generateTextReport(finalOwnerName);
         
         if (navigator.share) {
           navigator.share({
             title: 'Мой походный чеклист',
             text: textReport
           }).catch(err => {
-            fallbackTextShare(textReport);
+            // Если пользователь отменил шеринг на телефоне (нажал Назад / AbortError), НЕ запускаем ложное скачивание!
+            if (err.name !== 'AbortError') {
+              fallbackTextShare(textReport, finalOwnerName);
+            }
           });
         } else {
-          fallbackTextShare(textReport);
+          fallbackTextShare(textReport, finalOwnerName);
         }
       } catch (e) {
         alert('Ошибка при подготовке отчета: ' + e.message);
       }
     }
 
-    function fallbackTextShare(textReport) {
+    function fallbackTextShare(textReport, ownerName) {
       navigator.clipboard.writeText(textReport).then(() => {
         alert('Текстовый отчет успешно скопирован в буфер обмена!\nВы можете вставить его в Telegram.\n\nТакже начнется скачивание файла чеклиста (.txt).');
-        downloadTextFile(textReport);
+        downloadTextFile(textReport, ownerName);
       }).catch(err => {
         const input = document.createElement('textarea');
         input.value = textReport;
@@ -1105,15 +1116,13 @@
           alert('Не удалось скопировать автоматически. Сейчас начнется скачивание текстового файла.');
         }
         document.body.removeChild(input);
-        downloadTextFile(textReport);
+        downloadTextFile(textReport, ownerName);
       });
     }
 
-    async function downloadTextFile(textReport) {
+    async function downloadTextFile(textReport, ownerName) {
       try {
-        // Динамическое считывание имени владельца из заголовка на главной
-        const userName = document.querySelector('#page1 h1')?.textContent?.trim() || 'Евгений';
-        const fileName = `checklist-${userName}.txt`;
+        const fileName = `checklist-${ownerName}.txt`;
 
         // Добавляем маркер UTF-8 BOM (\uFEFF) для корректного отображения кириллицы на смартфонах и в Блокноте
         const contentWithBOM = '\uFEFF' + textReport;
