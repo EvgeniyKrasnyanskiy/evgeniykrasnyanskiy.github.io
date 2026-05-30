@@ -326,6 +326,24 @@
     .help-icon:hover {
       transform: scale(1.1);
     }
+
+    .item-name {
+      display: inline-block;
+      min-width: 50px;
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .item-name:focus {
+      background: rgba(120, 120, 120, 0.08);
+      border-bottom: 1px dashed var(--btn-color) !important;
+      max-width: none;
+      white-space: normal;
+      overflow: visible;
+    }
   </style>
 </head>
 
@@ -739,16 +757,18 @@
           const itemW = parseFloat(item.weight) || 0;
           const itemColor = getItemWeightColor(itemW);
 
-          const label = document.createElement('label');
-          label.className = 'check-item' + (item.checked ? ' done' : '');
-          label.style.borderLeft = `4px solid ${itemColor}`;
-          label.draggable = true;
+          const itemEl = document.createElement('div');
+          itemEl.className = 'check-item' + (item.checked ? ' done' : '');
+          itemEl.style.borderLeft = `4px solid ${itemColor}`;
+          itemEl.draggable = true;
 
-          label.innerHTML = `
+          itemEl.innerHTML = `
             <div class="item-info">
               <span style="margin-right: 10px; opacity: 0.3; font-size: 0.8rem; cursor: grab;">☰</span>
               <input type="checkbox" ${item.checked ? 'checked' : ''}>
-              <span>${item.name}</span>
+              <span class="item-name" contenteditable="true" 
+                    style="outline: none; border-bottom: 1px dashed transparent; cursor: text; padding: 2px 4px; border-radius: 4px;"
+                    title="Нажмите, чтобы переименовать">${item.name}</span>
             </div>
             <div class="weight-input-wrapper">
               <input type="number" class="weight-input" value="${item.weight}" min="0" 
@@ -760,16 +780,16 @@
           `;
 
           // Drag and Drop события
-          label.addEventListener('dragstart', (e) => {
+          itemEl.addEventListener('dragstart', (e) => {
             e.dataTransfer.setData('text/plain', JSON.stringify({ catIdx, itemIdx }));
-            label.classList.add('dragging');
+            itemEl.classList.add('dragging');
           });
 
-          label.addEventListener('dragend', () => label.classList.remove('dragging'));
+          itemEl.addEventListener('dragend', () => itemEl.classList.remove('dragging'));
 
-          label.addEventListener('dragover', (e) => e.preventDefault());
+          itemEl.addEventListener('dragover', (e) => e.preventDefault());
 
-          label.addEventListener('drop', (e) => {
+          itemEl.addEventListener('drop', (e) => {
             e.preventDefault();
             const source = JSON.parse(e.dataTransfer.getData('text/plain'));
             const target = { catIdx, itemIdx };
@@ -793,15 +813,40 @@
           });
 
           // Логика чекбокса
-          const checkbox = label.querySelector('input[type="checkbox"]');
+          const checkbox = itemEl.querySelector('input[type="checkbox"]');
           checkbox.addEventListener('change', () => {
             item.checked = checkbox.checked;
-            label.classList.toggle('done', item.checked);
+            itemEl.classList.toggle('done', item.checked);
             saveData();
           });
 
+          // Логика редактирования названия позиции
+          const nameSpan = itemEl.querySelector('.item-name');
+          nameSpan.addEventListener('focus', () => {
+            // Отключаем drag-and-drop на время редактирования текста, чтобы можно было выделять текст курсором
+            itemEl.draggable = false;
+          });
+
+          nameSpan.addEventListener('blur', () => {
+            itemEl.draggable = true;
+            const newName = nameSpan.textContent.trim();
+            if (newName && newName !== item.name) {
+              item.name = newName;
+              saveData();
+            } else {
+              nameSpan.textContent = item.name; // Восстанавливаем, если стерли до пустого
+            }
+          });
+
+          nameSpan.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault(); // Предотвращаем перенос строки
+              nameSpan.blur();
+            }
+          });
+
           // Логика ввода веса
-          const weightInput = label.querySelector('.weight-input');
+          const weightInput = itemEl.querySelector('.weight-input');
           weightInput.addEventListener('input', () => {
             item.weight = weightInput.value;
             saveData();
@@ -809,10 +854,10 @@
             // Обновляем цвета на лету
             const itemW = parseFloat(weightInput.value) || 0;
             const itemColor = getItemWeightColor(itemW);
-            label.style.borderLeft = `4px solid ${itemColor}`;
+            itemEl.style.borderLeft = `4px solid ${itemColor}`;
             weightInput.style.color = itemColor;
 
-            const unitSpan = label.querySelector('.weight-unit');
+            const unitSpan = itemEl.querySelector('.weight-unit');
             if (unitSpan) unitSpan.style.color = itemColor;
 
             // Мгновенно обновляем общий итог и итог категории
@@ -831,7 +876,7 @@
 
           weightInput.addEventListener('click', (e) => e.stopPropagation());
 
-          container.appendChild(label);
+          container.appendChild(itemEl);
         });
 
         // Кнопка добавления в категорию
