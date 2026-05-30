@@ -1089,14 +1089,13 @@
         saveData();
         renderChecklist();
 
-        // Спрашиваем имя и маршрут владельца перед экспортом для персонализации отчета и имени файла
-        const defaultPromptVal = "Ваше имя и маршрут";
-        const ownerName = prompt('Введите ваше имя и маршрут похода (для подписи отчета и названия файла):', defaultPromptVal);
+        // Спрашиваем имя и маршрут владельца перед экспортом для персонализации отчета и имени файла (по умолчанию пустое окно)
+        const ownerName = prompt('Введите ваше имя и маршрут похода (для подписи отчета и названия файла):', '');
         
         // Если пользователь отменил диалог prompt (нажал Отмену), прерываем шеринг
         if (ownerName === null) return;
         
-        const finalOwnerName = ownerName.trim() || defaultPromptVal;
+        const finalOwnerName = ownerName.trim() || 'Мой поход';
         const textReport = generateTextReport(finalOwnerName);
         
         if (navigator.share) {
