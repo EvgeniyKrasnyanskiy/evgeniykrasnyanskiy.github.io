@@ -87,7 +87,8 @@
 
       .card {
         border-radius: 0;
-        padding: 1.5rem 1rem 2.5rem; /* Безопасный отступ снизу */
+        padding: 1.5rem 1rem 2.5rem;
+        /* Безопасный отступ снизу */
         height: 100%;
         width: 100%;
       }
@@ -388,15 +389,15 @@
           <span>Общий вес:</span>
           <span id="total-weight" class="total-value">0 гр</span>
         </div>
-        <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; font-size: 0.85rem; font-weight: normal; opacity: 0.8; border-top: 1px dashed rgba(120, 120, 120, 0.15); padding-top: 6px;">
+        <div
+          style="display: flex; justify-content: space-between; width: 100%; align-items: center; font-size: 0.85rem; font-weight: normal; opacity: 0.8; border-top: 1px dashed rgba(120, 120, 120, 0.15); padding-top: 6px;">
           <span>Всего позиций:</span>
           <span id="total-items-count" style="font-weight: 600;">0 шт</span>
         </div>
       </div>
 
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
-        <button class="btn green" style="margin-top: 0; font-size: 0.75rem; padding: 10px;"
-          onclick="shareList()">
+        <button class="btn green" style="margin-top: 0; font-size: 0.75rem; padding: 10px;" onclick="shareList()">
           🔗 Поделиться
         </button>
         <button class="btn" style="background: #9b59b6; margin-top: 0; font-size: 0.75rem; padding: 10px;"
@@ -429,32 +430,40 @@
   </div>
 
   <!-- Модальное окно Справки -->
-  <div id="help-modal" style="display: none; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); padding: 20px; transition: all 0.3s ease;">
-    <div style="background: var(--card-bg); width: 100%; max-width: 400px; max-height: 85vh; padding: 25px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); text-align: left; position: relative; display: flex; flex-direction: column;">
-      <h3 style="margin-top: 0; margin-bottom: 15px; font-size: 1.2rem; display: flex; align-items: center; justify-content: space-between; color: var(--text-main); flex-shrink: 0; font-weight: 600;">
+  <div id="help-modal"
+    style="display: none; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); padding: 20px; transition: all 0.3s ease;">
+    <div
+      style="background: var(--card-bg); width: 100%; max-width: 400px; max-height: 85vh; padding: 25px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); text-align: left; position: relative; display: flex; flex-direction: column;">
+      <h3
+        style="margin-top: 0; margin-bottom: 15px; font-size: 1.2rem; display: flex; align-items: center; justify-content: space-between; color: var(--text-main); flex-shrink: 0; font-weight: 600;">
         <span>📖 Шкала идеального веса</span>
-        <button onclick="closeExpertHelpModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary); line-height: 1; padding: 5px;">&times;</button>
+        <button onclick="closeExpertHelpModal()"
+          style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary); line-height: 1; padding: 5px;">&times;</button>
       </h3>
-      
-      <div style="overflow-y: auto; flex-grow: 1; padding-right: 5px; font-size: 0.85rem; line-height: 1.5; color: var(--text-main);">
-        <p style="margin-top: 0; color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 15px;">Рекомендации по весу снаряжения для комфортного похода:</p>
-        
+
+      <div
+        style="overflow-y: auto; flex-grow: 1; padding-right: 5px; font-size: 0.85rem; line-height: 1.5; color: var(--text-main);">
+        <p style="margin-top: 0; color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 15px;">Рекомендации по
+          весу снаряжения для комфортного похода:</p>
+
         <div style="margin-bottom: 15px; border-left: 3px solid var(--btn-color); padding-left: 10px;">
-          <h4 style="margin: 0 0 5px 0; color: var(--btn-color); font-size: 0.9rem; font-weight: 600;">1. ОСНОВНОЕ (рюкзак, палатка, спальник...)</h4>
+          <h4 style="margin: 0 0 5px 0; color: var(--btn-color); font-size: 0.9rem; font-weight: 600;">1. ОСНОВНОЕ
+            (рюкзак, палатка, спальник...)</h4>
           • Идеал: 3.5 – 4.5 кг<br>
           • Оптимально: 5.0 – 6.0 кг<br>
           • Тяжело: 6.5 – 8.0 кг<br>
           • Критично: &gt; 9.0 кг
         </div>
-        
+
         <div style="margin-bottom: 15px; border-left: 3px solid var(--accent-green); padding-left: 10px;">
-          <h4 style="margin: 0 0 5px 0; color: var(--accent-green); font-size: 0.9rem; font-weight: 600;">2. ОДЕЖДА И ОБУВЬ</h4>
+          <h4 style="margin: 0 0 5px 0; color: var(--accent-green); font-size: 0.9rem; font-weight: 600;">2. ОДЕЖДА И
+            ОБУВЬ</h4>
           • Идеал: 1.0 – 1.5 кг<br>
           • Оптимально: 1.5 – 2.2 кг<br>
           • Тяжело: 2.5 – 3.5 кг<br>
           • Критично: &gt; 4.0 кг
         </div>
-        
+
         <div style="margin-bottom: 15px; border-left: 3px solid #e67e22; padding-left: 10px;">
           <h4 style="margin: 0 0 5px 0; color: #e67e22; font-size: 0.9rem; font-weight: 600;">3. ЕДА И КУХНЯ</h4>
           • Идеал: 1.8 – 2.2 кг<br>
@@ -462,7 +471,7 @@
           • Тяжело: 3.5 – 4.5 кг<br>
           • Критично: &gt; 5.0 кг
         </div>
-        
+
         <div style="margin-bottom: 15px; border-left: 3px solid #9b59b6; padding-left: 10px;">
           <h4 style="margin: 0 0 5px 0; color: #9b59b6; font-size: 0.9rem; font-weight: 600;">4. ПРОЧЕЕ И ГИГИЕНА</h4>
           • Идеал: 0.5 – 0.8 кг<br>
@@ -470,40 +479,50 @@
           • Тяжело: 2.0 – 2.5 кг<br>
           • Критично: &gt; 3.0 кг
         </div>
-        
+
         <div style="background: rgba(120, 120, 120, 0.08); padding: 12px; border-radius: 14px; margin-top: 15px;">
-          <h4 style="margin: 0 0 8px 0; text-align: center; font-size: 0.9rem; font-weight: 600; color: var(--btn-color);">🏆 ИТОГОВЫЙ ВЕС (на спине)</h4>
+          <h4
+            style="margin: 0 0 8px 0; text-align: center; font-size: 0.9rem; font-weight: 600; color: var(--btn-color);">
+            🏆 ИТОГОВЫЙ ВЕС (на спине)</h4>
           • <b>Идеал (Fastpacking):</b> 6 – 8 кг<br>
           • <b>Оптимально (Lightweight):</b> 9 – 11 кг<br>
           • <b>Тяжело (Classic):</b> 14 – 16 кг<br>
           • <b>Критично (Risk):</b> &gt; 18 кг
         </div>
       </div>
-      
+
       <button class="btn" style="margin-top: 15px; flex-shrink: 0;" onclick="closeExpertHelpModal()">Понятно</button>
     </div>
   </div>
 
   <!-- Модальное окно Предпросмотра Импорта -->
-  <div id="preview-modal" style="display: none; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); padding: 20px; transition: all 0.3s ease;">
-    <div style="background: var(--card-bg); width: 100%; max-width: 400px; max-height: 85vh; padding: 25px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); text-align: left; position: relative; display: flex; flex-direction: column;">
-      <h3 style="margin-top: 0; margin-bottom: 10px; font-size: 1.2rem; display: flex; align-items: center; justify-content: space-between; color: var(--text-main); flex-shrink: 0; font-weight: 600;">
+  <div id="preview-modal"
+    style="display: none; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); padding: 20px; transition: all 0.3s ease;">
+    <div
+      style="background: var(--card-bg); width: 100%; max-width: 400px; max-height: 85vh; padding: 25px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); text-align: left; position: relative; display: flex; flex-direction: column;">
+      <h3
+        style="margin-top: 0; margin-bottom: 10px; font-size: 1.2rem; display: flex; align-items: center; justify-content: space-between; color: var(--text-main); flex-shrink: 0; font-weight: 600;">
         <span>📥 Предпросмотр импорта</span>
-        <button onclick="closePreviewModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary); line-height: 1; padding: 5px;">&times;</button>
+        <button onclick="closePreviewModal()"
+          style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary); line-height: 1; padding: 5px;">&times;</button>
       </h3>
-      
-      <p id="preview-filename" style="font-size: 0.8rem; color: var(--btn-color); font-weight: 600; margin: 0 0 15px 0; word-break: break-all;"></p>
-      
-      <div style="overflow-y: auto; flex-grow: 1; padding-right: 5px; font-size: 0.85rem; line-height: 1.5; color: var(--text-main); margin-bottom: 15px;">
-        <div id="preview-summary" style="background: rgba(120, 120, 120, 0.08); padding: 12px; border-radius: 14px; margin-bottom: 15px;">
+
+      <p id="preview-filename"
+        style="font-size: 0.8rem; color: var(--btn-color); font-weight: 600; margin: 0 0 15px 0; word-break: break-all;">
+      </p>
+
+      <div
+        style="overflow-y: auto; flex-grow: 1; padding-right: 5px; font-size: 0.85rem; line-height: 1.5; color: var(--text-main); margin-bottom: 15px;">
+        <div id="preview-summary"
+          style="background: rgba(120, 120, 120, 0.08); padding: 12px; border-radius: 14px; margin-bottom: 15px;">
           <!-- Сводка будет заполнена через JS -->
         </div>
-        
+
         <div id="preview-items-list" style="border-top: 1px solid rgba(120, 120, 120, 0.15); padding-top: 15px;">
           <!-- Список вещей будет заполнен через JS -->
         </div>
       </div>
-      
+
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex-shrink: 0;">
         <button class="btn back" style="margin-top: 0; padding: 12px;" onclick="closePreviewModal()">Отмена</button>
         <button class="btn green" style="margin-top: 0; padding: 12px;" onclick="confirmImport()">Загрузить</button>
@@ -768,7 +787,7 @@
       });
       const cat = hikingData[catIdx];
       const catRes = getCategoryWeightColor(cat.category, catTotal);
-      
+
       const catHeader = document.querySelector(`.category-title[data-cat-idx="${catIdx}"]`);
       if (catHeader) {
         const weightSpan = catHeader.querySelector('.cat-weight-val');
@@ -789,7 +808,7 @@
         let activePath = null;
         let selectionStart = null;
         let selectionEnd = null;
-        
+
         if (active && active.classList.contains('weight-input')) {
           activePath = {
             catIdx: parseInt(active.getAttribute('data-cat-idx')),
@@ -798,18 +817,18 @@
           try {
             selectionStart = active.selectionStart;
             selectionEnd = active.selectionEnd;
-          } catch (e) {}
+          } catch (e) { }
         }
-        
+
         renderChecklist();
-        
+
         if (activePath !== null) {
           const newActive = document.querySelector(`.weight-input[data-cat-idx="${activePath.catIdx}"][data-item-idx="${activePath.itemIdx}"]`);
           if (newActive) {
             newActive.focus();
             try {
               newActive.setSelectionRange(selectionStart, selectionEnd);
-            } catch (e) {}
+            } catch (e) { }
           }
         }
       }, 1500);
@@ -1031,7 +1050,7 @@
         // Кнопка добавления в категорию
         const addBtn = document.createElement('button');
         addBtn.className = 'btn-add';
-        addBtn.innerHTML = '<span>+ Добавить вещь</span>';
+        addBtn.innerHTML = '<span>+ Добавить</span>';
         addBtn.onclick = () => addItem(catIdx);
         container.appendChild(addBtn);
       });
@@ -1043,13 +1062,13 @@
     function generateTextReport(ownerName) {
       let report = `🎒 Походный чеклист: ${ownerName}\n`;
       report += `====================\n\n`;
-      
+
       let grandTotal = 0;
       let totalItems = 0;
       hikingData.forEach(cat => {
         let catTotal = 0;
         let catItemsText = '';
-        
+
         cat.items.forEach(item => {
           const w = parseFloat(item.weight) || 0;
           if (!isNaN(w)) {
@@ -1060,7 +1079,7 @@
           const checkStatus = item.checked ? '[x]' : '[ ]';
           catItemsText += `  ${checkStatus} ${item.name} (${w} гр)\n`;
         });
-        
+
         if (cat.items.length > 0) {
           report += `📁 Категория: ${cat.category} (Вес: ${formatW(catTotal)} гр)\n`;
           report += `--------------------\n`;
@@ -1068,14 +1087,14 @@
           report += `\n`;
         }
       });
-      
+
       const totalRes = getWeightColor(grandTotal);
       report += `====================\n`;
       report += `📦 Всего позиций: ${totalItems} шт.\n`;
       report += `🏆 ОБЩИЙ ВЕС СНАРЯЖЕНИЯ: ${formatW(grandTotal)} гр\n`;
       report += `📊 Оценка веса: ${totalRes.advice.split(':')[0]}\n`;
       report += `🌲 Сгенерировано на evgeniykrasnyanskiy.github.io\n`;
-      
+
       return report;
     }
 
@@ -1091,13 +1110,13 @@
 
         // Спрашиваем имя и маршрут владельца перед экспортом для персонализации отчета и имени файла (по умолчанию пустое окно)
         const ownerName = prompt('Введите ваше имя и маршрут похода (для подписи отчета и названия файла):', '');
-        
+
         // Если пользователь отменил диалог prompt (нажал Отмену), прерываем шеринг
         if (ownerName === null) return;
-        
+
         const finalOwnerName = ownerName.trim() || 'Мой поход';
         const textReport = generateTextReport(finalOwnerName);
-        
+
         if (navigator.share) {
           navigator.share({
             title: 'Мой походный чеклист',
@@ -1189,10 +1208,10 @@
       const lines = text.split(/\r?\n/);
       const categories = [];
       let currentCategory = null;
-      
+
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i].trim();
-        
+
         // 1. Распознаем категорию: "📁 Категория: Одежда (Вес: 1 200 гр)"
         if (line.includes('📁 Категория:') || line.startsWith('📁 Категория:') || line.includes('Категория:')) {
           const match = line.match(/(?:📁\s*)?Категория:\s*([^(]+)/i);
@@ -1206,16 +1225,16 @@
           }
           continue;
         }
-        
+
         // 2. Распознаем вещи: "  [ ] Смартфон (200 гр)" или "  [x] Паспорт (20 гр)"
         if (line.startsWith('[ ]') || line.startsWith('[x]') || line.startsWith('[X]')) {
           const checked = line.startsWith('[x]') || line.startsWith('[X]');
           let itemPart = line.substring(3).trim();
-          
+
           const weightMatch = itemPart.match(/\(([^)]+)\)$/);
           let name = itemPart;
           let weight = 0;
-          
+
           if (weightMatch) {
             const insideParens = weightMatch[1].trim();
             name = itemPart.substring(0, itemPart.lastIndexOf('(')).trim();
@@ -1224,7 +1243,7 @@
               weight = parseFloat(numMatch[1]);
             }
           }
-          
+
           if (currentCategory) {
             currentCategory.items.push({
               name: name,
@@ -1234,7 +1253,7 @@
           }
         }
       }
-      
+
       return categories;
     }
 
@@ -1248,12 +1267,12 @@
     function handleTxtImport(event) {
       const file = event.target.files[0];
       if (!file) return;
-      
+
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = function (e) {
         try {
           const parsed = parseTextReport(e.target.result);
-          
+
           if (parsed.length > 0 && parsed.some(c => c.items.length > 0)) {
             pendingImportData = parsed;
             showImportPreview(file.name, parsed);
@@ -1270,35 +1289,35 @@
 
     function showImportPreview(fileName, categories) {
       document.getElementById('preview-filename').textContent = `📄 Файл: ${fileName}`;
-      
+
       let totalCategories = categories.length;
       let totalItems = 0;
       let totalWeight = 0;
-      
+
       let summaryHtml = '';
       let itemsListHtml = '<h4 style="margin: 0 0 10px 0; font-size: 0.9rem; font-weight: 600;">Содержимое списка:</h4>';
-      
+
       categories.forEach(cat => {
         let catWeight = 0;
         let catItemsCount = cat.items.length;
         totalItems += catItemsCount;
-        
+
         let catItemsListHtml = '';
-        
+
         cat.items.forEach(item => {
           const w = parseFloat(item.weight) || 0;
           catWeight += w;
           totalWeight += w;
-          
+
           const statusChar = item.checked ? '☑' : '☐';
           catItemsListHtml += `<div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed rgba(120,120,120,0.05); font-size: 0.8rem; opacity: 0.9;">
             <span>${statusChar} ${item.name}</span>
             <span style="color: var(--text-secondary); font-weight: 600;">${w} гр</span>
           </div>`;
         });
-        
+
         summaryHtml += `📁 <b>${cat.category}</b>: ${catItemsCount} шт. (${formatW(catWeight)} гр)<br>`;
-        
+
         if (catItemsCount > 0) {
           itemsListHtml += `<div style="margin-bottom: 15px;">
             <div style="font-weight: 600; color: var(--btn-color); font-size: 0.85rem; border-bottom: 1px solid rgba(120,120,120,0.1); padding-bottom: 3px; margin-bottom: 6px;">${cat.category}</div>
@@ -1306,19 +1325,19 @@
           </div>`;
         }
       });
-      
+
       const totalRes = getWeightColor(totalWeight);
-      
+
       summaryHtml = `
         <b>Сводка по списку:</b><br>
         • Категорий: ${totalCategories}<br>
         • Всего вещей: ${totalItems} шт.<br>
         • <b>Общий вес:</b> <span style="color: ${totalRes.color}; font-weight: bold;">${formatW(totalWeight)} гр</span> (${totalRes.advice.split(':')[0]})
       `;
-      
+
       document.getElementById('preview-summary').innerHTML = summaryHtml;
       document.getElementById('preview-items-list').innerHTML = itemsListHtml;
-      
+
       // Показываем предпросмотр
       const modal = document.getElementById('preview-modal');
       modal.style.display = 'flex';
