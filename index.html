@@ -993,7 +993,7 @@
     // Генерация красивого текстового отчета по вещам
     function generateTextReport() {
       let report = `🎒 Мой походный чеклист\n`;
-      report += `==================================\n\n`;
+      report += `====================\n\n`;
       
       let grandTotal = 0;
       hikingData.forEach(cat => {
@@ -1012,14 +1012,14 @@
         
         if (cat.items.length > 0) {
           report += `📁 Категория: ${cat.category} (Вес: ${formatW(catTotal)} гр)\n`;
-          report += `----------------------------------\n`;
+          report += `--------------------\n`;
           report += catItemsText;
           report += `\n`;
         }
       });
       
       const totalRes = getWeightColor(grandTotal);
-      report += `==================================\n`;
+      report += `====================\n`;
       report += `🏆 ОБЩИЙ ВЕС СНАРЯЖЕНИЯ: ${formatW(grandTotal)} гр\n`;
       report += `📊 Оценка веса: ${totalRes.advice.split(':')[0]}\n`;
       report += `🌲 Сгенерировано на evgeniykrasnyanskiy.github.io\n`;
@@ -1030,6 +1030,13 @@
     // Функция шеринга (нативный текст, копирование и скачивание .txt)
     function shareList() {
       try {
+        // Принудительно сортируем снаряжение по массе, начиная с максимальной
+        hikingData.forEach(cat => {
+          cat.items.sort((a, b) => (parseFloat(b.weight) || 0) - (parseFloat(a.weight) || 0));
+        });
+        saveData();
+        renderChecklist();
+
         const textReport = generateTextReport();
         
         if (navigator.share) {
