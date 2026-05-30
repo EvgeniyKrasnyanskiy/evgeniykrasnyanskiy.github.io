@@ -388,9 +388,17 @@
         <span id="total-weight" class="total-value">0 гр</span>
       </div>
 
-      <button class="btn green" style="margin-top: 15px; font-size: 0.9rem;" onclick="shareList()">
-        🔗 Поделиться списком
-      </button>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+        <button class="btn green" style="margin-top: 0; font-size: 0.75rem; padding: 10px;"
+          onclick="shareList()">
+          🔗 Поделиться
+        </button>
+        <button class="btn" style="background: #9b59b6; margin-top: 0; font-size: 0.75rem; padding: 10px;"
+          onclick="triggerFileImport()">
+          📥 Импорт .txt
+        </button>
+      </div>
+      <input type="file" id="import-txt-input" accept=".txt" style="display: none;" onchange="handleTxtImport(event)">
 
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
         <button class="btn back" style="background: #e67e22; margin-top: 0; font-size: 0.75rem; padding: 10px;"
@@ -467,6 +475,33 @@
       </div>
       
       <button class="btn" style="margin-top: 15px; flex-shrink: 0;" onclick="closeExpertHelpModal()">Понятно</button>
+    </div>
+  </div>
+
+  <!-- Модальное окно Предпросмотра Импорта -->
+  <div id="preview-modal" style="display: none; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); padding: 20px; transition: all 0.3s ease;">
+    <div style="background: var(--card-bg); width: 100%; max-width: 400px; max-height: 85vh; padding: 25px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); text-align: left; position: relative; display: flex; flex-direction: column;">
+      <h3 style="margin-top: 0; margin-bottom: 10px; font-size: 1.2rem; display: flex; align-items: center; justify-content: space-between; color: var(--text-main); flex-shrink: 0; font-weight: 600;">
+        <span>📥 Предпросмотр импорта</span>
+        <button onclick="closePreviewModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary); line-height: 1; padding: 5px;">&times;</button>
+      </h3>
+      
+      <p id="preview-filename" style="font-size: 0.8rem; color: var(--btn-color); font-weight: 600; margin: 0 0 15px 0; word-break: break-all;"></p>
+      
+      <div style="overflow-y: auto; flex-grow: 1; padding-right: 5px; font-size: 0.85rem; line-height: 1.5; color: var(--text-main); margin-bottom: 15px;">
+        <div id="preview-summary" style="background: rgba(120, 120, 120, 0.08); padding: 12px; border-radius: 14px; margin-bottom: 15px;">
+          <!-- Сводка будет заполнена через JS -->
+        </div>
+        
+        <div id="preview-items-list" style="border-top: 1px solid rgba(120, 120, 120, 0.15); padding-top: 15px;">
+          <!-- Список вещей будет заполнен через JS -->
+        </div>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex-shrink: 0;">
+        <button class="btn back" style="margin-top: 0; padding: 12px;" onclick="closePreviewModal()">Отмена</button>
+        <button class="btn green" style="margin-top: 0; padding: 12px;" onclick="confirmImport()">Загрузить</button>
+      </div>
     </div>
   </div>
 
@@ -1076,17 +1111,184 @@
 
     function downloadTextFile(textReport) {
       try {
+        // Динамическое считывание имени владельца из заголовка на главной
+        const userName = document.querySelector('#page1 h1')?.textContent?.trim() || 'Евгений';
+        const fileName = `checklist-${userName}.txt`;
+
         const blob = new Blob([textReport], { type: 'text/plain;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'hiking-list.txt';
+        a.download = fileName;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
       } catch (e) {
         alert('Ошибка при скачивании файла: ' + e.message);
+      }
+    }
+
+    // Умный парсер простого текстового отчета чеклиста обратно в массив данных
+    function parseTextReport(text) {
+      const lines = text.split(/\r?\n/);
+      const categories = [];
+      let currentCategory = null;
+      
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        
+        // 1. Распознаем категорию: "📁 Категория: Одежда (Вес: 1 200 гр)"
+        if (line.includes('📁 Категория:') || line.startsWith('📁 Категория:') || line.includes('Категория:')) {
+          const match = line.match(/(?:📁\s*)?Категория:\s*([^(]+)/i);
+          if (match) {
+            const catName = match[1].trim();
+            currentCategory = {
+              category: catName,
+              items: []
+            };
+            categories.push(currentCategory);
+          }
+          continue;
+        }
+        
+        // 2. Распознаем вещи: "  [ ] Смартфон (200 гр)" или "  [x] Паспорт (20 гр)"
+        if (line.startsWith('[ ]') || line.startsWith('[x]') || line.startsWith('[X]')) {
+          const checked = line.startsWith('[x]') || line.startsWith('[X]');
+          let itemPart = line.substring(3).trim();
+          
+          const weightMatch = itemPart.match(/\(([^)]+)\)$/);
+          let name = itemPart;
+          let weight = 0;
+          
+          if (weightMatch) {
+            const insideParens = weightMatch[1].trim();
+            name = itemPart.substring(0, itemPart.lastIndexOf('(')).trim();
+            const numMatch = insideParens.match(/(\d+(?:\.\d+)?)/);
+            if (numMatch) {
+              weight = parseFloat(numMatch[1]);
+            }
+          }
+          
+          if (currentCategory) {
+            currentCategory.items.push({
+              name: name,
+              weight: weight || 0,
+              checked: checked
+            });
+          }
+        }
+      }
+      
+      return categories;
+    }
+
+    // Обработка Импорта файла .txt
+    let pendingImportData = null;
+
+    function triggerFileImport() {
+      document.getElementById('import-txt-input').click();
+    }
+
+    function handleTxtImport(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const parsed = parseTextReport(e.target.result);
+          
+          if (parsed.length > 0 && parsed.some(c => c.items.length > 0)) {
+            pendingImportData = parsed;
+            showImportPreview(file.name, parsed);
+          } else {
+            alert('Не удалось распознать структуру категорий или вещей в файле. Убедитесь, что это текстовый файл чеклиста.');
+          }
+        } catch (err) {
+          alert('Ошибка при чтении файла чеклиста: ' + err.message);
+        }
+        event.target.value = ''; // Сброс инпута
+      };
+      reader.readAsText(file);
+    }
+
+    function showImportPreview(fileName, categories) {
+      document.getElementById('preview-filename').textContent = `📄 Файл: ${fileName}`;
+      
+      let totalCategories = categories.length;
+      let totalItems = 0;
+      let totalWeight = 0;
+      
+      let summaryHtml = '';
+      let itemsListHtml = '<h4 style="margin: 0 0 10px 0; font-size: 0.9rem; font-weight: 600;">Содержимое списка:</h4>';
+      
+      categories.forEach(cat => {
+        let catWeight = 0;
+        let catItemsCount = cat.items.length;
+        totalItems += catItemsCount;
+        
+        let catItemsListHtml = '';
+        
+        cat.items.forEach(item => {
+          const w = parseFloat(item.weight) || 0;
+          catWeight += w;
+          totalWeight += w;
+          
+          const statusChar = item.checked ? '☑' : '☐';
+          catItemsListHtml += `<div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed rgba(120,120,120,0.05); font-size: 0.8rem; opacity: 0.9;">
+            <span>${statusChar} ${item.name}</span>
+            <span style="color: var(--text-secondary); font-weight: 600;">${w} гр</span>
+          </div>`;
+        });
+        
+        summaryHtml += `📁 <b>${cat.category}</b>: ${catItemsCount} шт. (${formatW(catWeight)} гр)<br>`;
+        
+        if (catItemsCount > 0) {
+          itemsListHtml += `<div style="margin-bottom: 15px;">
+            <div style="font-weight: 600; color: var(--btn-color); font-size: 0.85rem; border-bottom: 1px solid rgba(120,120,120,0.1); padding-bottom: 3px; margin-bottom: 6px;">${cat.category}</div>
+            ${catItemsListHtml}
+          </div>`;
+        }
+      });
+      
+      const totalRes = getWeightColor(totalWeight);
+      
+      summaryHtml = `
+        <b>Сводка по списку:</b><br>
+        • Категорий: ${totalCategories}<br>
+        • Всего вещей: ${totalItems} шт.<br>
+        • <b>Общий вес:</b> <span style="color: ${totalRes.color}; font-weight: bold;">${formatW(totalWeight)} гр</span> (${totalRes.advice.split(':')[0]})
+      `;
+      
+      document.getElementById('preview-summary').innerHTML = summaryHtml;
+      document.getElementById('preview-items-list').innerHTML = itemsListHtml;
+      
+      // Показываем предпросмотр
+      const modal = document.getElementById('preview-modal');
+      modal.style.display = 'flex';
+      modal.style.opacity = '0';
+      requestAnimationFrame(() => {
+        modal.style.opacity = '1';
+      });
+    }
+
+    function closePreviewModal() {
+      const modal = document.getElementById('preview-modal');
+      modal.style.opacity = '0';
+      setTimeout(() => {
+        modal.style.display = 'none';
+        pendingImportData = null;
+      }, 300);
+    }
+
+    function confirmImport() {
+      if (pendingImportData) {
+        hikingData = pendingImportData;
+        saveData();
+        renderChecklist();
+        closePreviewModal();
+        alert('Чеклист успешно импортирован!');
       }
     }
 
