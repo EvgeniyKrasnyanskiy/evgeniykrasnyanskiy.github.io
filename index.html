@@ -383,9 +383,15 @@
         <!-- Генерируется через JS -->
       </div>
 
-      <div class="total-weight-card">
-        <span>Общий вес:</span>
-        <span id="total-weight" class="total-value">0 гр</span>
+      <div class="total-weight-card" style="display: flex; flex-direction: column; gap: 8px; align-items: stretch;">
+        <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+          <span>Общий вес:</span>
+          <span id="total-weight" class="total-value">0 гр</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; font-size: 0.85rem; font-weight: normal; opacity: 0.8; border-top: 1px dashed rgba(120, 120, 120, 0.15); padding-top: 6px;">
+          <span>Всего позиций:</span>
+          <span id="total-items-count" style="font-weight: 600;">0 шт</span>
+        </div>
       </div>
 
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
@@ -512,31 +518,32 @@
       {
         category: "Основное",
         items: [
-          { name: "Смартфон", weight: 200 },
+          { name: "Смартфон", weight: 244 },
           { name: "e-Sim(Megafon)", weight: 0 },
-          { name: "Билет(пропуск)", weight: 1 },
+          { name: "Пропуск", weight: 1 },
           { name: "Паспорт", weight: 20 },
           { name: "Наличные (5-10тр)", weight: 10 },
-          { name: "Рюкзак", weight: 1500 },
-          { name: "Палатка(доля)", weight: 1750 },
+          { name: "Рюкзак", weight: 1100 },
+          { name: "Палатка", weight: 2965 },
           { name: "Спальник", weight: 1000 },
-          { name: "Коврик", weight: 500 },
-          { name: "Трек.палки", weight: 500 }
+          { name: "Коврик", weight: 300 },
+          { name: "Трек.палки", weight: 575 }
         ]
       },
       {
         category: "Одежда",
         items: [
-          { name: "Панама и шапка", weight: 100 },
-          { name: "Очки", weight: 50 },
+          { name: "Панама", weight: 100 },
+          { name: "Шапка", weight: 100 },
+          { name: "Очки(солн)", weight: 50 },
           { name: "Кроссовки", weight: 400 },
           { name: "Тапочки", weight: 200 },
-          { name: "Брюки(на себе)", weight: 100 },
-          { name: "Брюки(запас)", weight: 100 },
-          { name: "Носки(3 пары)", weight: 100 },
+          { name: "Брюки(2 шт)", weight: 100 },
+          { name: "Носки(2 пары)", weight: 100 },
           { name: "Футболка(2 шт)", weight: 150 },
           { name: "Лонгслив(1 шт)", weight: 100 },
-          { name: "Трусы(3 шт)", weight: 100 },
+          { name: "Термобельё(2 шт)", weight: 100 },
+          { name: "Трусы(2 шт)", weight: 100 },
           { name: "Дождевик", weight: 100 },
           { name: "Спас-одеяло", weight: 20 },
           { name: "Ветровка", weight: 100 }
@@ -547,12 +554,13 @@
         items: [
           { name: "Продукты", weight: 2000 },
           { name: "Нож", weight: 100 },
-          { name: "Газ и горелка(доля)", weight: 200 },
-          { name: "Котелок/посуда(доля)", weight: 400 },
+          { name: "Газ и горелка", weight: 200 },
+          { name: "Котелок/посуда", weight: 400 },
           { name: "Кружка", weight: 30 },
           { name: "Ложка/вилка", weight: 20 },
           { name: "Салфетки", weight: 50 },
-          { name: "Бутылка 0.5л(2шт)", weight: 1000 }
+          { name: "Салфетки влажн.", weight: 150 },
+          { name: "Бутылка воды 1л", weight: 1000 }
         ]
       },
       {
@@ -561,10 +569,10 @@
           { name: "Спички", weight: 50 },
           { name: "Крем от солнца", weight: 50 },
           { name: "Крем для кожи", weight: 50 },
-          { name: "Зубная паста/щетка", weight: 50 },
+          { name: "Зубная паста и щётка", weight: 50 },
           { name: "Шампунь/мыло", weight: 20 },
-          { name: "Туалетная(влаж) бум", weight: 100 },
-          { name: "Полотенце(корот)", weight: 100 },
+          { name: "Туалетная бум.(влаж)", weight: 100 },
+          { name: "Полотенце(малое)", weight: 100 },
           { name: "Фонарик", weight: 150 },
           { name: "Таблетки", weight: 10 },
           { name: "Пластыри", weight: 10 },
@@ -729,10 +737,12 @@
 
     function updateTotal() {
       let total = 0;
+      let itemsCount = 0;
       hikingData.forEach(cat => {
         cat.items.forEach(item => {
           const w = parseFloat(item.weight);
           if (!isNaN(w)) total += w;
+          itemsCount++;
         });
       });
       const totalRes = getWeightColor(total);
@@ -743,6 +753,10 @@
         totalEl.style.cursor = 'help';
         totalEl.title = totalRes.advice;
         totalEl.onclick = () => alert(totalRes.advice);
+      }
+      const countEl = document.getElementById('total-items-count');
+      if (countEl) {
+        countEl.textContent = itemsCount + ' шт';
       }
     }
 
@@ -1031,6 +1045,7 @@
       report += `====================\n\n`;
       
       let grandTotal = 0;
+      let totalItems = 0;
       hikingData.forEach(cat => {
         let catTotal = 0;
         let catItemsText = '';
@@ -1041,6 +1056,7 @@
             catTotal += w;
             grandTotal += w;
           }
+          totalItems++;
           const checkStatus = item.checked ? '[x]' : '[ ]';
           catItemsText += `  ${checkStatus} ${item.name} (${w} гр)\n`;
         });
@@ -1055,6 +1071,7 @@
       
       const totalRes = getWeightColor(grandTotal);
       report += `====================\n`;
+      report += `📦 Всего позиций: ${totalItems} шт.\n`;
       report += `🏆 ОБЩИЙ ВЕС СНАРЯЖЕНИЯ: ${formatW(grandTotal)} гр\n`;
       report += `📊 Оценка веса: ${totalRes.advice.split(':')[0]}\n`;
       report += `🌲 Сгенерировано на evgeniykrasnyanskiy.github.io\n`;
@@ -1072,14 +1089,14 @@
         saveData();
         renderChecklist();
 
-        // Спрашиваем имя владельца перед экспортом для персонализации отчета и имени файла
-        const defaultName = document.querySelector('#page1 h1')?.textContent?.trim() || 'Евгений';
-        const ownerName = prompt('Чей это список вещей? (для подписи отчета и имени файла):', defaultName);
+        // Спрашиваем имя и маршрут владельца перед экспортом для персонализации отчета и имени файла
+        const defaultPromptVal = "Ваше имя и маршрут";
+        const ownerName = prompt('Введите ваше имя и маршрут похода (для подписи отчета и названия файла):', defaultPromptVal);
         
         // Если пользователь отменил диалог prompt (нажал Отмену), прерываем шеринг
         if (ownerName === null) return;
         
-        const finalOwnerName = ownerName.trim() || defaultName;
+        const finalOwnerName = ownerName.trim() || defaultPromptVal;
         const textReport = generateTextReport(finalOwnerName);
         
         if (navigator.share) {
@@ -1122,7 +1139,9 @@
 
     async function downloadTextFile(textReport, ownerName) {
       try {
-        const fileName = `checklist-${ownerName}.txt`;
+        // Очищаем имя файла от недопустимых символов для безопасного сохранения на различных ОС
+        const safeOwnerName = ownerName.replace(/[\\/:*?"<>|]/g, '_');
+        const fileName = `checklist-${safeOwnerName}.txt`;
 
         // Добавляем маркер UTF-8 BOM (\uFEFF) для корректного отображения кириллицы на смартфонах и в Блокноте
         const contentWithBOM = '\uFEFF' + textReport;
