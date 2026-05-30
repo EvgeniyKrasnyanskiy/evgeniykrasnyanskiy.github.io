@@ -618,11 +618,68 @@
       });
       const totalRes = getWeightColor(total);
       const totalEl = document.getElementById('total-weight');
-      totalEl.textContent = formatW(total) + ' гр';
-      totalEl.style.color = totalRes.color;
-      totalEl.style.cursor = 'help';
-      totalEl.title = totalRes.advice;
-      totalEl.onclick = () => alert(totalRes.advice);
+      if (totalEl) {
+        totalEl.textContent = formatW(total) + ' гр';
+        totalEl.style.color = totalRes.color;
+        totalEl.style.cursor = 'help';
+        totalEl.title = totalRes.advice;
+        totalEl.onclick = () => alert(totalRes.advice);
+      }
+    }
+
+    function updateCategoryWeightDOM(catIdx) {
+      let catTotal = 0;
+      hikingData[catIdx].items.forEach(item => {
+        const w = parseFloat(item.weight);
+        if (!isNaN(w)) catTotal += w;
+      });
+      const cat = hikingData[catIdx];
+      const catRes = getCategoryWeightColor(cat.category, catTotal);
+      
+      const catHeader = document.querySelector(`.category-title[data-cat-idx="${catIdx}"]`);
+      if (catHeader) {
+        const weightSpan = catHeader.querySelector('.cat-weight-val');
+        if (weightSpan) {
+          weightSpan.textContent = formatW(catTotal) + ' гр';
+          weightSpan.style.color = catRes.color;
+          weightSpan.onclick = () => alert(catRes.advice);
+          weightSpan.title = catRes.advice;
+        }
+      }
+    }
+
+    let debounceTimer;
+    function debounceRender() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        const active = document.activeElement;
+        let activePath = null;
+        let selectionStart = null;
+        let selectionEnd = null;
+        
+        if (active && active.classList.contains('weight-input')) {
+          activePath = {
+            catIdx: parseInt(active.getAttribute('data-cat-idx')),
+            itemIdx: parseInt(active.getAttribute('data-item-idx'))
+          };
+          try {
+            selectionStart = active.selectionStart;
+            selectionEnd = active.selectionEnd;
+          } catch (e) {}
+        }
+        
+        renderChecklist();
+        
+        if (activePath !== null) {
+          const newActive = document.querySelector(`.weight-input[data-cat-idx="${activePath.catIdx}"][data-item-idx="${activePath.itemIdx}"]`);
+          if (newActive) {
+            newActive.focus();
+            try {
+              newActive.setSelectionRange(selectionStart, selectionEnd);
+            } catch (e) {}
+          }
+        }
+      }, 1500);
     }
 
     function deleteItem(catIdx, itemIdx) {
@@ -664,12 +721,13 @@
         catHeader.className = 'category-title';
         catHeader.style.display = 'flex';
         catHeader.style.justifyContent = 'space-between';
+        catHeader.setAttribute('data-cat-idx', catIdx);
 
         const catRes = getCategoryWeightColor(cat.category, catTotal);
 
         catHeader.innerHTML = `
           <span>${cat.category}</span>
-          <span style="font-size: 0.8rem; font-weight: 600; color: ${catRes.color}; cursor: help;" 
+          <span class="cat-weight-val" style="font-size: 0.8rem; font-weight: 600; color: ${catRes.color}; cursor: help;" 
                 title="${catRes.advice}" 
                 onclick="alert('${catRes.advice}')">
             ${formatW(catTotal)} гр
@@ -693,8 +751,10 @@
               <span>${item.name}</span>
             </div>
             <div class="weight-input-wrapper">
-              <input type="number" class="weight-input" value="${item.weight}" min="0" style="color: ${itemColor}; font-weight: 600;">
-              <span style="color: ${itemColor}; opacity: 0.8;">гр</span>
+              <input type="number" class="weight-input" value="${item.weight}" min="0" 
+                     data-cat-idx="${catIdx}" data-item-idx="${itemIdx}"
+                     style="color: ${itemColor}; font-weight: 600;">
+              <span class="weight-unit" style="color: ${itemColor}; opacity: 0.8;">гр</span>
               <button class="btn-del" onclick="event.preventDefault(); deleteItem(${catIdx}, ${itemIdx})">×</button>
             </div>
           `;
@@ -744,8 +804,29 @@
           const weightInput = label.querySelector('.weight-input');
           weightInput.addEventListener('input', () => {
             item.weight = weightInput.value;
-            renderChecklist();
             saveData();
+
+            // Обновляем цвета на лету
+            const itemW = parseFloat(weightInput.value) || 0;
+            const itemColor = getItemWeightColor(itemW);
+            label.style.borderLeft = `4px solid ${itemColor}`;
+            weightInput.style.color = itemColor;
+
+            const unitSpan = label.querySelector('.weight-unit');
+            if (unitSpan) unitSpan.style.color = itemColor;
+
+            // Мгновенно обновляем общий итог и итог категории
+            updateTotal();
+            updateCategoryWeightDOM(catIdx);
+
+            // Откладываем полный рендеринг (дебаунсинг)
+            debounceRender();
+          });
+
+          weightInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              weightInput.blur();
+            }
           });
 
           weightInput.addEventListener('click', (e) => e.stopPropagation());
