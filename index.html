@@ -388,16 +388,9 @@
         <span id="total-weight" class="total-value">0 гр</span>
       </div>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
-        <button class="btn green" style="margin-top: 0; font-size: 0.75rem; padding: 10px;"
-          onclick="shareList()">
-          🔗 Поделиться списком
-        </button>
-        <button class="btn" style="background: #9b59b6; margin-top: 0; font-size: 0.75rem; padding: 10px;"
-          onclick="openExportImportModal()">
-          📥 Экспорт / Импорт
-        </button>
-      </div>
+      <button class="btn green" style="margin-top: 15px; font-size: 0.9rem;" onclick="shareList()">
+        🔗 Поделиться списком
+      </button>
 
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
         <button class="btn back" style="background: #e67e22; margin-top: 0; font-size: 0.75rem; padding: 10px;"
@@ -421,32 +414,59 @@
 
   </div>
 
-  <!-- Модальное окно Экспорт / Импорт -->
-  <div id="export-modal" style="display: none; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); padding: 20px; transition: all 0.3s ease;">
-    <div style="background: var(--card-bg); width: 100%; max-width: 400px; padding: 25px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); text-align: left; position: relative;">
-      <h3 style="margin-top: 0; margin-bottom: 15px; font-size: 1.25rem; display: flex; align-items: center; justify-content: space-between; color: var(--text-main);">
-        <span>Экспорт и Импорт</span>
-        <button onclick="closeExportImportModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary); line-height: 1; padding: 5px;">&times;</button>
+  <!-- Модальное окно Справки -->
+  <div id="help-modal" style="display: none; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); padding: 20px; transition: all 0.3s ease;">
+    <div style="background: var(--card-bg); width: 100%; max-width: 400px; max-height: 85vh; padding: 25px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); text-align: left; position: relative; display: flex; flex-direction: column;">
+      <h3 style="margin-top: 0; margin-bottom: 15px; font-size: 1.2rem; display: flex; align-items: center; justify-content: space-between; color: var(--text-main); flex-shrink: 0; font-weight: 600;">
+        <span>📖 Шкала идеального веса</span>
+        <button onclick="closeExpertHelpModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary); line-height: 1; padding: 5px;">&times;</button>
       </h3>
       
-      <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 15px; line-height: 1.4;">
-        Вы можете скопировать текстовый JSON-код вашего списка или скачать его файлом. Также можно вставить JSON-код или выбрать файл для импорта.
-      </p>
-      
-      <textarea id="export-textarea" style="width: 100%; height: 120px; border-radius: 12px; border: 1px solid rgba(120, 120, 120, 0.3); background: rgba(120, 120, 120, 0.05); color: var(--text-main); font-family: monospace; font-size: 0.75rem; padding: 10px; resize: none; margin-bottom: 15px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--btn-color)'" onblur="this.style.borderColor='rgba(120, 120, 120, 0.3)'"></textarea>
-      
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
-        <button class="btn" style="margin-top: 0; font-size: 0.75rem; padding: 10px;" onclick="copyTextExport()">📋 Скопировать</button>
-        <button class="btn green" style="margin-top: 0; font-size: 0.75rem; padding: 10px;" onclick="downloadJsonExport()">💾 Скачать файл</button>
-      </div>
-      
-      <div style="border-top: 1px solid rgba(120, 120, 120, 0.15); padding-top: 15px;">
-        <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 10px;">
-          <input type="file" id="import-file-input" accept=".json" style="display: none;" onchange="handleFileImport(event)">
-          <button class="btn" style="background: var(--btn-back); margin-top: 0; font-size: 0.75rem; padding: 10px;" onclick="document.getElementById('import-file-input').click()">📁 Выбрать файл</button>
-          <button class="btn green" style="margin-top: 0; font-size: 0.75rem; padding: 10px;" onclick="applyTextImport()">📥 Импорт</button>
+      <div style="overflow-y: auto; flex-grow: 1; padding-right: 5px; font-size: 0.85rem; line-height: 1.5; color: var(--text-main);">
+        <p style="margin-top: 0; color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 15px;">Рекомендации по весу снаряжения для комфортного похода:</p>
+        
+        <div style="margin-bottom: 15px; border-left: 3px solid var(--btn-color); padding-left: 10px;">
+          <h4 style="margin: 0 0 5px 0; color: var(--btn-color); font-size: 0.9rem; font-weight: 600;">1. ОСНОВНОЕ (рюкзак, палатка, спальник...)</h4>
+          • Идеал: 3.5 – 4.5 кг<br>
+          • Оптимально: 5.0 – 6.0 кг<br>
+          • Тяжело: 6.5 – 8.0 кг<br>
+          • Критично: &gt; 9.0 кг
+        </div>
+        
+        <div style="margin-bottom: 15px; border-left: 3px solid var(--accent-green); padding-left: 10px;">
+          <h4 style="margin: 0 0 5px 0; color: var(--accent-green); font-size: 0.9rem; font-weight: 600;">2. ОДЕЖДА И ОБУВЬ</h4>
+          • Идеал: 1.0 – 1.5 кг<br>
+          • Оптимально: 1.5 – 2.2 кг<br>
+          • Тяжело: 2.5 – 3.5 кг<br>
+          • Критично: &gt; 4.0 кг
+        </div>
+        
+        <div style="margin-bottom: 15px; border-left: 3px solid #e67e22; padding-left: 10px;">
+          <h4 style="margin: 0 0 5px 0; color: #e67e22; font-size: 0.9rem; font-weight: 600;">3. ЕДА И КУХНЯ</h4>
+          • Идеал: 1.8 – 2.2 кг<br>
+          • Оптимально: 2.5 – 3.0 кг<br>
+          • Тяжело: 3.5 – 4.5 кг<br>
+          • Критично: &gt; 5.0 кг
+        </div>
+        
+        <div style="margin-bottom: 15px; border-left: 3px solid #9b59b6; padding-left: 10px;">
+          <h4 style="margin: 0 0 5px 0; color: #9b59b6; font-size: 0.9rem; font-weight: 600;">4. ПРОЧЕЕ И ГИГИЕНА</h4>
+          • Идеал: 0.5 – 0.8 кг<br>
+          • Оптимально: 1.0 – 1.5 кг<br>
+          • Тяжело: 2.0 – 2.5 кг<br>
+          • Критично: &gt; 3.0 кг
+        </div>
+        
+        <div style="background: rgba(120, 120, 120, 0.08); padding: 12px; border-radius: 14px; margin-top: 15px;">
+          <h4 style="margin: 0 0 8px 0; text-align: center; font-size: 0.9rem; font-weight: 600; color: var(--btn-color);">🏆 ИТОГОВЫЙ ВЕС (на спине)</h4>
+          • <b>Идеал (Fastpacking):</b> 6 – 8 кг<br>
+          • <b>Оптимально (Lightweight):</b> 9 – 11 кг<br>
+          • <b>Тяжело (Classic):</b> 14 – 16 кг<br>
+          • <b>Критично (Risk):</b> &gt; 18 кг
         </div>
       </div>
+      
+      <button class="btn" style="margin-top: 15px; flex-shrink: 0;" onclick="closeExpertHelpModal()">Понятно</button>
     </div>
   </div>
 
@@ -970,108 +990,90 @@
       updateTotal();
     }
 
-    // Вспомогательные функции для работы с Base64 (с поддержкой UTF-8 / кириллицы)
-    function base64Encode(str) {
-      return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
-        return String.fromCharCode(parseInt(p1, 16));
-      }));
+    // Генерация красивого текстового отчета по вещам
+    function generateTextReport() {
+      let report = `🎒 Мой походный чеклист\n`;
+      report += `==================================\n\n`;
+      
+      let grandTotal = 0;
+      hikingData.forEach(cat => {
+        let catTotal = 0;
+        let catItemsText = '';
+        
+        cat.items.forEach(item => {
+          const w = parseFloat(item.weight) || 0;
+          if (!isNaN(w)) {
+            catTotal += w;
+            grandTotal += w;
+          }
+          const checkStatus = item.checked ? '[x]' : '[ ]';
+          catItemsText += `  ${checkStatus} ${item.name} (${w} гр)\n`;
+        });
+        
+        if (cat.items.length > 0) {
+          report += `📁 Категория: ${cat.category} (Вес: ${formatW(catTotal)} гр)\n`;
+          report += `----------------------------------\n`;
+          report += catItemsText;
+          report += `\n`;
+        }
+      });
+      
+      const totalRes = getWeightColor(grandTotal);
+      report += `==================================\n`;
+      report += `🏆 ОБЩИЙ ВЕС СНАРЯЖЕНИЯ: ${formatW(grandTotal)} гр\n`;
+      report += `📊 Оценка веса: ${totalRes.advice.split(':')[0]}\n`;
+      report += `🌲 Сгенерировано на evgeniykrasnyanskiy.github.io\n`;
+      
+      return report;
     }
 
-    function base64Decode(str) {
-      return decodeURIComponent(Array.prototype.map.call(atob(str), function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-    }
-
-    // Функция генерации ссылки и шеринга
+    // Функция шеринга (нативный текст, копирование и скачивание .txt)
     function shareList() {
       try {
-        const jsonStr = JSON.stringify(hikingData);
-        const encoded = base64Encode(jsonStr);
-        const shareUrl = window.location.origin + window.location.pathname + '#share=' + encoded;
+        const textReport = generateTextReport();
         
         if (navigator.share) {
           navigator.share({
             title: 'Мой походный чеклист',
-            text: 'Вот список вещей, которые я беру с собой в поход. Открой ссылку, чтобы посмотреть или загрузить его себе!',
-            url: shareUrl
+            text: textReport
           }).catch(err => {
-            // Если отменили шеринг или возникла ошибка, копируем в буфер
-            copyToClipboard(shareUrl);
+            fallbackTextShare(textReport);
           });
         } else {
-          copyToClipboard(shareUrl);
+          fallbackTextShare(textReport);
         }
       } catch (e) {
-        alert('Ошибка генерации ссылки: ' + e.message);
+        alert('Ошибка при подготовке отчета: ' + e.message);
       }
     }
 
-    function copyToClipboard(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        alert('Ссылка скопирована в буфер обмена!');
+    function fallbackTextShare(textReport) {
+      navigator.clipboard.writeText(textReport).then(() => {
+        alert('Текстовый отчет успешно скопирован в буфер обмена!\nВы можете вставить его в Telegram.\n\nТакже начнется скачивание файла чеклиста (.txt).');
+        downloadTextFile(textReport);
       }).catch(err => {
         const input = document.createElement('textarea');
-        input.value = text;
+        input.value = textReport;
         document.body.appendChild(input);
         input.select();
         try {
           document.execCommand('copy');
-          alert('Ссылка скопирована в буфер обмена!');
+          alert('Текстовый отчет скопирован в буфер обмена!\nВы можете вставить его в Telegram.\n\nТакже начнется скачивание файла чеклиста (.txt).');
         } catch (e) {
-          alert('Не удалось скопировать ссылку автоматически. Скопируйте её вручную:\n\n' + text);
+          alert('Не удалось скопировать автоматически. Сейчас начнется скачивание текстового файла.');
         }
         document.body.removeChild(input);
+        downloadTextFile(textReport);
       });
     }
 
-    // Управление модальным окном Экспорт / Импорт
-    function openExportImportModal() {
-      const modal = document.getElementById('export-modal');
-      const textarea = document.getElementById('export-textarea');
+    function downloadTextFile(textReport) {
       try {
-        textarea.value = JSON.stringify(hikingData, null, 2);
-      } catch (e) {
-        textarea.value = '';
-      }
-      modal.style.display = 'flex';
-      modal.style.opacity = '0';
-      requestAnimationFrame(() => {
-        modal.style.opacity = '1';
-      });
-    }
-
-    function closeExportImportModal() {
-      const modal = document.getElementById('export-modal');
-      modal.style.opacity = '0';
-      setTimeout(() => {
-        modal.style.display = 'none';
-      }, 300);
-    }
-
-    function copyTextExport() {
-      const textarea = document.getElementById('export-textarea');
-      textarea.select();
-      navigator.clipboard.writeText(textarea.value).then(() => {
-        alert('JSON-код списка скопирован в буфер обмена!');
-      }).catch(err => {
-        try {
-          document.execCommand('copy');
-          alert('JSON-код списка скопирован в буфер обмена!');
-        } catch (e) {
-          alert('Не удалось скопировать текст. Скопируйте его вручную.');
-        }
-      });
-    }
-
-    function downloadJsonExport() {
-      try {
-        const jsonStr = JSON.stringify(hikingData, null, 2);
-        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const blob = new Blob([textReport], { type: 'text/plain;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'hiking-inventory.json';
+        a.download = 'hiking-list.txt';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -1081,93 +1083,27 @@
       }
     }
 
-    function applyTextImport() {
-      const textarea = document.getElementById('export-textarea');
-      const text = textarea.value.trim();
-      if (!text) {
-        alert('Пожалуйста, вставьте JSON-код списка для импорта.');
-        return;
-      }
-      
-      try {
-        const parsed = JSON.parse(text);
-        if (Array.isArray(parsed) && parsed.every(c => c.category && Array.isArray(c.items))) {
-          if (confirm('Вы действительно хотите импортировать этот список? Ваши текущие данные будут перезаписаны.')) {
-            hikingData = parsed;
-            saveData();
-            renderChecklist();
-            closeExportImportModal();
-            alert('Список успешно импортирован!');
-          }
-        } else {
-          alert('Неверный формат данных. Список должен быть массивом категорий с вещами.');
-        }
-      } catch (e) {
-        alert('Ошибка разбора JSON: ' + e.message);
-      }
+    // Управление модальным окном Справки
+    function showExpertHelp() {
+      openExpertHelpModal();
     }
 
-    function handleFileImport(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const parsed = JSON.parse(e.target.result);
-          if (Array.isArray(parsed) && parsed.every(c => c.category && Array.isArray(c.items))) {
-            if (confirm(`Импортировать список из файла "${file.name}"? Это заменит ваши текущие данные.`)) {
-              hikingData = parsed;
-              saveData();
-              renderChecklist();
-              closeExportImportModal();
-              alert('Список успешно импортирован!');
-            }
-          } else {
-            alert('Неверный формат данных в файле.');
-          }
-        } catch (err) {
-          alert('Ошибка чтения файла: ' + err.message);
-        }
-        event.target.value = ''; // Сброс поля выбора файла
-      };
-      reader.readAsText(file);
+    function openExpertHelpModal() {
+      const modal = document.getElementById('help-modal');
+      modal.style.display = 'flex';
+      modal.style.opacity = '0';
+      requestAnimationFrame(() => {
+        modal.style.opacity = '1';
+      });
     }
 
-    // Проверка наличия переданного через ссылку списка
-    function checkSharedList() {
-      const hash = window.location.hash;
-      if (hash && hash.startsWith('#share=')) {
-        const encoded = hash.substring(7);
-        try {
-          const jsonStr = base64Decode(encoded);
-          const importedCategories = JSON.parse(jsonStr);
-          
-          if (Array.isArray(importedCategories) && importedCategories.every(c => c.category && Array.isArray(c.items))) {
-            setTimeout(() => {
-              if (confirm('Обнаружен общий список вещей! Желаете импортировать его? Ваша текущая версия списка будет стерта.')) {
-                hikingData = importedCategories;
-                saveData();
-                renderChecklist();
-                alert('Список успешно импортирован!');
-              }
-              // Очищаем хеш из URL
-              history.replaceState("", document.title, window.location.pathname + window.location.search);
-            }, 500);
-          } else {
-            alert('Ссылка содержит некорректный формат списка.');
-            history.replaceState("", document.title, window.location.pathname + window.location.search);
-          }
-        } catch (e) {
-          alert('Не удалось расшифровать список из ссылки.');
-          history.replaceState("", document.title, window.location.pathname + window.location.search);
-        }
-      }
+    function closeExpertHelpModal() {
+      const modal = document.getElementById('help-modal');
+      modal.style.opacity = '0';
+      setTimeout(() => {
+        modal.style.display = 'none';
+      }, 300);
     }
-
-    // Слушатели для автоматического импорта по ссылке
-    window.addEventListener('load', checkSharedList);
-    window.addEventListener('hashchange', checkSharedList);
 
     // Инициализация
     renderChecklist();
