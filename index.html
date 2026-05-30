@@ -344,6 +344,12 @@
       white-space: normal;
       overflow: visible;
     }
+
+    .sort-btn:hover {
+      opacity: 1 !important;
+      color: var(--btn-color) !important;
+      transform: scale(1.25);
+    }
   </style>
 </head>
 
@@ -723,6 +729,33 @@
       saveData();
     }
 
+    function sortCategory(catIdx) {
+      const items = hikingData[catIdx].items;
+      if (items.length <= 1) return;
+
+      // Проверяем, отсортированы ли элементы по убыванию веса
+      let isDesc = true;
+      for (let i = 0; i < items.length - 1; i++) {
+        const w1 = parseFloat(items[i].weight) || 0;
+        const w2 = parseFloat(items[i + 1].weight) || 0;
+        if (w1 < w2) {
+          isDesc = false;
+          break;
+        }
+      }
+
+      if (isDesc) {
+        // Если уже по убыванию, сортируем по возрастанию веса
+        items.sort((a, b) => (parseFloat(a.weight) || 0) - (parseFloat(b.weight) || 0));
+      } else {
+        // Иначе сортируем по убыванию веса
+        items.sort((a, b) => (parseFloat(b.weight) || 0) - (parseFloat(a.weight) || 0));
+      }
+
+      saveData();
+      renderChecklist();
+    }
+
     function renderChecklist() {
       const container = document.getElementById('checklist-container');
       container.innerHTML = '';
@@ -739,12 +772,19 @@
         catHeader.className = 'category-title';
         catHeader.style.display = 'flex';
         catHeader.style.justifyContent = 'space-between';
+        catHeader.style.alignItems = 'center';
         catHeader.setAttribute('data-cat-idx', catIdx);
 
         const catRes = getCategoryWeightColor(cat.category, catTotal);
 
         catHeader.innerHTML = `
-          <span>${cat.category}</span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span>${cat.category}</span>
+            <button class="sort-btn" onclick="sortCategory(${catIdx})" title="Сортировать по весу" 
+                    style="background: none; border: none; cursor: pointer; color: var(--text-secondary); opacity: 0.5; padding: 2px 5px; font-size: 0.95rem; transition: all 0.2s; display: inline-flex; align-items: center;">
+              ⇅
+            </button>
+          </div>
           <span class="cat-weight-val" style="font-size: 0.8rem; font-weight: 600; color: ${catRes.color}; cursor: help;" 
                 title="${catRes.advice}" 
                 onclick="alert('${catRes.advice}')">
